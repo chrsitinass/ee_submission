@@ -1,20 +1,30 @@
 \begin{abstract}
-Existing event extraction systems are typically investigated in a supervised
-learning paradigm, which heavily relies on the quality of
-expert-annotated datasets, % which still require a costly and time-consuming process to construct.
-% As a result, the built datasets
-usually covering a limited variety of event types and making the learned event extractor hard to generalize. 
-In this paper, we address the problem
-of automatically building event extractors for rich event types with little expert involvement.
-We achieve this by employing distant supervision to automatically create event annotations from
-unlabelled text using structured knowledge bases or tables. We propose a novel
-neural network model with post inference, to detect multi-typed event mentions with corresponding arguments.
-% We evaluate our approach by investigating the feasibility of  automatically collecting training data for event extraction from both 
-Experiments on the datasets collected through Freebase and Wikipedia tables show
-that 
-%our proposed extraction model is designed to identify both typed event mentions and typed arguments. 
-% Both automatic and manual evaluations demonstrate that 
-it is possible to learn to extract events of rich types without human-annotated training data.
+Supervised learning is an effective method for building event extraction systems. The effectiveness of the learning heavily depends on
+the quality of the training datasets. Existing event extractor systems are typically built upon expert-annotated datasets. However, due
+to drastic efforts involved in annotating text, these datasets are usually small and cover only a limited variety of event types. This
+limits the quality of learned event extractor, making it hard to generalize. In this paper, we investigate ways to generate training
+datasets that require little expert involvement but can cover a richer set of event types. We achieve this by employing distant
+supervision to automatically create event annotations from unlabelled text using existing structured knowledge bases or tables. We then
+develop a novel neural network model with post inference, to detect multi-typed event mentions \FIXME{ZW: reviewers may not know what is
+a event mention} with corresponding arguments. Experiments on the datasets collected through Freebase and Wikipedia tables show that it
+is possible to learn to extract events of rich types without human-annotated training data. \FIXME{ZW: Will come back to the experimental
+results later.}
+
+%Existing event extraction systems are typically investigated in a supervised learning paradigm, which heavily relies on the quality of
+%expert-annotated datasets. Due to the drastic efforts involved in text annotation, the human-annotated datasets are typically small, only
+%covering a limited variety of event types. This limits This limits the quality of learned event extractor, making it hard to generalize.
+
+
+%In this paper, we address the problem of automatically building event extractors for rich event types with little expert involvement. We
+%achieve this by employing distant supervision to automatically create event annotations from unlabelled text using structured knowledge
+%bases or tables. We propose a novel neural network model with post inference, to detect multi-typed event mentions with corresponding
+%arguments.
+%% We evaluate our approach by investigating the feasibility of  automatically collecting training data for event extraction from both
+%Experiments on the datasets collected through Freebase and Wikipedia tables show
+%that
+%%our proposed extraction model is designed to identify both typed event mentions and typed arguments.
+%% Both automatic and manual evaluations demonstrate that
+%it is possible to learn to extract events of rich types without human-annotated training data.
 
 %
 %and rely on expert-annotated datasets, with limited event types.
