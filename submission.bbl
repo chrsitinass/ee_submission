@@ -1,0 +1,193 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Aguilar \bgroup et al\mbox.\egroup
+  }{2014}]{aguilar2014comparison}
+Aguilar, J.; Beller, C.; McNamee, P.; Van~Durme, B.; Strassel, S.; Song, Z.;
+  and Ellis, J.
+\newblock 2014.
+\newblock A comparison of the events and relations across ace, ere, tac-kbp,
+  and framenet annotation standards.
+\newblock In {\em Proceedings of the Second Workshop on EVENTS: Definition,
+  Detection, Coreference, and Representation},  45--53.
+
+\bibitem[\protect\citeauthoryear{Ahn}{2006}]{ahn2006stages}
+Ahn, D.
+\newblock 2006.
+\newblock The stages of event extraction.
+\newblock In {\em Proceedings of the Workshop on Annotating and Reasoning about
+  Time and Events},  1--8.
+\newblock Association for Computational Linguistics.
+
+\bibitem[\protect\citeauthoryear{Berger, Pietra, and
+  Pietra}{1996}]{berger1996maximum}
+Berger, A.~L.; Pietra, V. J.~D.; and Pietra, S. A.~D.
+\newblock 1996.
+\newblock A maximum entropy approach to natural language processing.
+\newblock {\em Computational linguistics} 22(1):39--71.
+
+\bibitem[\protect\citeauthoryear{Bollacker \bgroup et al\mbox.\egroup
+  }{2008}]{bollacker2008freebase}
+Bollacker, K.; Evans, C.; Paritosh, P.; Sturge, T.; and Taylor, J.
+\newblock 2008.
+\newblock Freebase: a collaboratively created graph database for structuring
+  human knowledge.
+\newblock In {\em SIGMOD 2008},  1247--1250.
+\newblock ACM.
+
+\bibitem[\protect\citeauthoryear{Chen \bgroup et al\mbox.\egroup
+  }{2015}]{chen2015event}
+Chen, Y.; Xu, L.; Liu, K.; Zeng, D.; and Zhao, J.
+\newblock 2015.
+\newblock Event extraction via dynamic multi-pooling convolutional neural
+  networks.
+\newblock In {\em ACL 2015}, volume~1,  167--176.
+
+\bibitem[\protect\citeauthoryear{Collobert \bgroup et al\mbox.\egroup
+  }{2011}]{collobert2011natural}
+Collobert, R.; Weston, J.; Bottou, L.; Karlen, M.; Kavukcuoglu, K.; and Kuksa,
+  P.
+\newblock 2011.
+\newblock Natural language processing (almost) from scratch.
+\newblock {\em Journal of Machine Learning Research} 12(Aug):2493--2537.
+
+\bibitem[\protect\citeauthoryear{Doddington \bgroup et al\mbox.\egroup
+  }{2004}]{doddington2004automatic}
+Doddington, G.~R.; Mitchell, A.; Przybocki, M.~A.; Ramshaw, L.~A.; Strassel,
+  S.; and Weischedel, R.~M.
+\newblock 2004.
+\newblock The automatic content extraction (ace) program-tasks, data, and
+  evaluation.
+\newblock In {\em LREC 2004}, volume~2, ~1.
+
+\bibitem[\protect\citeauthoryear{Grishman and
+  Sundheim}{1996}]{grishman1996message}
+Grishman, R., and Sundheim, B.
+\newblock 1996.
+\newblock Message understanding conference-6: A brief history.
+\newblock In {\em COLING 1996}, volume~96,  466--471.
+
+\bibitem[\protect\citeauthoryear{Gupta and Ji}{2009}]{gupta2009predicting}
+Gupta, P., and Ji, H.
+\newblock 2009.
+\newblock Predicting unknown time arguments based on cross-event propagation.
+\newblock In {\em ACL-IJCNLP 2009},  369--372.
+\newblock Association for Computational Linguistics.
+
+\bibitem[\protect\citeauthoryear{Gurobi~Optimization}{2016}]{gurobi}
+Gurobi~Optimization, I.
+\newblock 2016.
+\newblock Gurobi optimizer reference manual.
+
+\bibitem[\protect\citeauthoryear{Hochreiter and
+  Schmidhuber}{1997}]{hochreiter1997long}
+Hochreiter, S., and Schmidhuber, J.
+\newblock 1997.
+\newblock Long short-term memory.
+\newblock {\em Neural computation} 9(8):1735--1780.
+
+\bibitem[\protect\citeauthoryear{Hong \bgroup et al\mbox.\egroup
+  }{2011}]{hong2011using}
+Hong, Y.; Zhang, J.; Ma, B.; Yao, J.; Zhou, G.; and Zhu, Q.
+\newblock 2011.
+\newblock Using cross-entity inference to improve event extraction.
+\newblock In {\em ACL 2011},  1127--1136.
+\newblock Association for Computational Linguistics.
+
+\bibitem[\protect\citeauthoryear{Huang \bgroup et al\mbox.\egroup
+  }{2016}]{huang2016liberal}
+Huang, L.; Cassidy, T.; Feng, X.; Ji, H.; Voss, C.; Han, J.; and Sil, A.
+\newblock 2016.
+\newblock Liberal event extraction and event schema induction.
+\newblock In {\em ACL 2016}.
+
+\bibitem[\protect\citeauthoryear{Huang, Xu, and
+  Yu}{2015}]{huang2015bidirectional}
+Huang, Z.; Xu, W.; and Yu, K.
+\newblock 2015.
+\newblock Bidirectional lstm-crf models for sequence tagging.
+\newblock {\em arXiv preprint arXiv:1508.01991}.
+
+\bibitem[\protect\citeauthoryear{Kudo}{2005}]{kudo2005crf++}
+Kudo, T.
+\newblock 2005.
+\newblock Crf++: Yet another crf toolkit.
+\newblock {\em Software available at http://crfpp. sourceforge. net}.
+
+\bibitem[\protect\citeauthoryear{Lafferty, McCallum, and
+  Pereira}{2001}]{lafferty2001conditional}
+Lafferty, J.; McCallum, A.; and Pereira, F.
+\newblock 2001.
+\newblock Conditional random fields: Probabilistic models for segmenting and
+  labeling sequence data.
+\newblock In {\em ICML 2001}, volume~1,  282--289.
+
+\bibitem[\protect\citeauthoryear{Lample \bgroup et al\mbox.\egroup
+  }{2016}]{lample2016neural}
+Lample, G.; Ballesteros, M.; Subramanian, S.; Kawakami, K.; and Dyer, C.
+\newblock 2016.
+\newblock Neural architectures for named entity recognition.
+\newblock {\em arXiv preprint arXiv:1603.01360}.
+
+\bibitem[\protect\citeauthoryear{Li, Ji, and Huang}{2013}]{li2013joint}
+Li, Q.; Ji, H.; and Huang, L.
+\newblock 2013.
+\newblock Joint event extraction via structured prediction with global
+  features.
+\newblock In {\em ACL 2013},  73--82.
+
+\bibitem[\protect\citeauthoryear{Mikolov \bgroup et al\mbox.\egroup
+  }{2013}]{mikolov2013distributed}
+Mikolov, T.; Sutskever, I.; Chen, K.; Corrado, G.~S.; and Dean, J.
+\newblock 2013.
+\newblock Distributed representations of words and phrases and their
+  compositionality.
+\newblock In {\em NIPS 2013},  3111--3119.
+
+\bibitem[\protect\citeauthoryear{Mintz \bgroup et al\mbox.\egroup
+  }{2009}]{mintz2009distant}
+Mintz, M.; Bills, S.; Snow, R.; and Jurafsky, D.
+\newblock 2009.
+\newblock Distant supervision for relation extraction without labeled data.
+\newblock In {\em ACL-IJCNLP 2009},  1003--1011.
+\newblock Association for Computational Linguistics.
+
+\bibitem[\protect\citeauthoryear{Mitamura \bgroup et al\mbox.\egroup
+  }{2015}]{mitamura2015event}
+Mitamura, T.; Yamakawa, Y.; Holm, S.; Song, Z.; Bies, A.; Kulick, S.; and
+  Strassel, S.
+\newblock 2015.
+\newblock Event nugget annotation: Processes and issues.
+\newblock In {\em Proc. of the Workshop on EVENTS at the NAACL-HLT},  66--76.
+
+\bibitem[\protect\citeauthoryear{Nguyen, Cho, and
+  Grishman}{2016}]{nguyen2016joint}
+Nguyen, T.~H.; Cho, K.; and Grishman, R.
+\newblock 2016.
+\newblock Joint event extraction via recurrent neural networks.
+\newblock In {\em NAACL-HLT 2016},  300--309.
+
+\bibitem[\protect\citeauthoryear{Rabiner}{1989}]{rabiner1989tutorial}
+Rabiner, L.~R.
+\newblock 1989.
+\newblock A tutorial on hidden markov models and selected applications in
+  speech recognition.
+\newblock {\em Proc. of the IEEE} 77(2):257--286.
+
+\bibitem[\protect\citeauthoryear{Song \bgroup et al\mbox.\egroup
+  }{2015}]{song2015light}
+Song, Z.; Bies, A.; Strassel, S.; Riese, T.; Mott, J.; Ellis, J.; Wright, J.;
+  Kulick, S.; Ryant, N.; and Ma, X.
+\newblock 2015.
+\newblock From light to rich ere: annotation of entities, relations, and
+  events.
+\newblock In {\em Proc. of the Workshop on EVENTS at the NAACL-HLT},  89--98.
+
+\bibitem[\protect\citeauthoryear{Zeng \bgroup et al\mbox.\egroup
+  }{2015}]{zeng2015distant}
+Zeng, D.; Liu, K.; Chen, Y.; and Zhao, J.
+\newblock 2015.
+\newblock Distant supervision for relation extraction via piecewise
+  convolutional neural networks.
+\newblock In {\em EMNLP 2015},  1753--1762.
+
+\end{thebibliography}
