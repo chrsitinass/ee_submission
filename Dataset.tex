@@ -1,68 +1,106 @@
-\section{Background}
+\section{Motivation}
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{figs/example.pdf}
-  \caption{An example sentence that describes a business acquisition event. These sentence consists of arguments which essentially define
-  the event type.}
+   \subfloat[][An example sentence from Wiki text]{\includegraphics[width=0.5\textwidth]{figs/example.pdf}}
+   \\
+   \subfloat[][ Entry of \texttt{business.acquisition} in Freebase]{
+        \scriptsize
+        \begin{tabular}{llllp{1.6cm}}
+        \toprule
+        & company\_acquired & acquiring\_company & date & divisions\_formed\\
+        \midrule
+        m.07bh4j7 & Remedy Corp & BMC Software & 2004 & Service Management Business Unit\\
+        \bottomrule
+        \end{tabular}
+
+   }
+  \caption{The event type of the sentence shown in (a) can be automatically inferred using the structural information given by Freebase in (b).}
   \label{fig:example}
 \end{figure}
 
 
 The task of event extraction is to (1) detect the occurrence of events with specific types and (2) extract arguments (i.e. typed
-participants or attributes) that are associated with an event. As an example, consider a sentence from the Wiki text dataset, shown in
-Figure~\ref{fig:example}. This sentence describes a business acquisition event. It consists of three \textbf{arguments}, \emph{acquired
-company} (Remedy Corp), \emph{acquiring company} (\emph{BMC Software}), \emph{formed division} (Service Management Business Unit) and
-\emph{date} (2014). To learn an event extractor, existing supervision-based approaches all require manually identifying and tagging the
-event trigger (``sold" in this example) from each individual sentence in the training data.
+participants or attributes) that are associated with an event. As a motivation example, consider a sentence from the Wiki text dataset,
+shown in Figure~\ref{fig:example} (a). This sentence describes a business acquisition event. It consists of three \textbf{arguments},
+\emph{acquired company} (Remedy Corp), \emph{acquiring company} (\emph{BMC Software}), \emph{formed division} (Service Management Business
+Unit) and \emph{date} (2004). To learn an event extractor, existing supervision-based approaches all require manually identifying the event
+type by examining the event trigger from each individual sentence in the training data -- for examples, trigger ``sold" in this example
+indicate there is a business acquisition event.
+
+%A predictive model is then trained, using supervised machine learning on the labelled training dataset. The model learns the
+%correlation between the properties of a sentence and its corresponding event type. The learned correlations are used to predict the event
+%type for new text.
+
+The problem of manually labelling is that it takes a lot of time to construct a training dataset and in many cases the resulted dataset is
+too small to learn an effective event extractor. To make the learning process fast and cheap, we must take humans out of the loop of data
+labelling. If we can find a way to automatically label training data, we can then scale up the training data generation to millions of
+instances instead of thousands that current approaches are capable of. We discover that the structural information of Freebase
+(\FB)~\cite{bollacker2008freebase} already provide sufficient information to allow us to automatically label the event type of the
+particular sentence shown in Figure~\ref{fig:example} (a). Figure~\ref{fig:example} (b) shows a Compound Value Type (\CVT) entry of \FB.
+\CVT organizes complex structured data with multiple \emph{properties} as a table\footnote{Therefore, we also use the term ``argument” to
+refer to a \CVT property for the rest of the paper.}. After examining this particular \CVT schema, one can find that this schema implies
+there could be a \emph{business.acquisition} event if the text contains properties (and arguments) like, \texttt{company\_acquired} (Remedy
+Corp), \texttt{acquiring\_company} (BMC Software) and date (2004) -- all these are the identical arguments if they were extracted manually.
+If we can utilize such \CVT information, we can then automatically label the sentence shown in Figure~\ref{fig:example} (a) without needing
+to identify the trigger (which can only be achieved through human annotation if one wants to generate a high-quality training dataset).
 
 
-To make the learning process fast and cheap, we must take humans out of the loop of data labelling. If we can find a fast way to
-automatically label training data, we can then reduce the overhead of training data construction on large-scale datasets. Instead of asking
-human annotators to manually tag each individual training sentence, we use a predefine structure table to automatically identify event
-types. In this way, experts are only required to construct a table of event types and arguments associated with each type; our method can
-then use the table to automatically label many sentences that contains these arguments. By doing so, we essentially reduce human
-involvement as now experts now only need to construct a table with a small number entries. \FIXME{zw: some of these need to go to
-introduction.}  In this work, we find that structured  knowledge bases (\KB) already provide a structure table which can be used to
-accurately infer the occurrence of certain types in real-world text.
+A natural question to ask is that ``How useful are \CVTs?". Later in this paper, we show that structured knowledge base, tables or lists
+that are used to sum up certain activities can be a useful source of supervision data generation for event extraction. For example, using
+just 24 \CVTs, we are able to automatically generate 280 million instances (\FIXME{Section~\ref{}}).
 
 
+In this work, we develop a novel technique to automatically generate training data by exploiting the prior \CVT knowledge offered by
+various datasets, including \FB and Wikiedia pages. Our work shows that it is possible to scale up training data generation for event
+extraction with little human involvement. In the next section, we give an overview before presenting our approach in more details.
 
+
+%%
+%%Instead of asking human annotators to manually tag each individual training sentence, we use a predefine structure table to automatically
+%%identify event types. In this way, experts are only required to construct a table of event types and arguments associated with each type;
+%%our method can then use the table to automatically label many sentences that contains these arguments. By doing so, we essentially reduce
+%%human involvement as now experts now only need to construct a table with a small number entries. \FIXME{zw: some of these need to go to
+%%introduction.}  In this work, we find that structured  knowledge bases (\KB) already provide a structure table which can be used to
+%%accurately infer the occurrence of certain types in real-world text.
 %
-%\section{The Event Extraction Task}
-%%\subsection{Event Definition}
-%% 给出相关术语的定义，subsection名字起得对吗？
-%Event extraction aims to detect the occurrence of events with specific types and extract their typed participants or attributes from text. We clarify the following terminologies within our work:
-%\begin{itemize}
-%	\item \textbf{Event mention}: a phrase or sentence within which an event is described, including its type and arguments.
-%	\item \textbf{Argument}: an entity mention, temporal expression or value that is involved in an event, with specific roles.
-%	\item \textbf{Key argument}: the argument that plays an important role in one event, and helps to distinguish with other events. % 要不要举例说明什么是key argument？这里再举例会不会和introduction里面的举例重复？
-%	% 没有地方的时候，argument role可以删掉（我看别人ACE定义的时候都讲了这个就先放上来了）
-%	%\item \textbf{Argument role}: the relationship between an event and its involved argument.
-%\end{itemize}
-
-\subsection{Indirect Supervision for Event}%{Tabular Data}
-% 缺一句连接的话？
-We first utilize Freebase~\cite{bollacker2008freebase} as a source of supervision to guide our data construction, %the structured knowledge base.
-% and there are three basics concepts: \emph{instance}, \emph{type} and \emph{property}. \emph{Instances} are entries in Freebase. \emph{Types} are different perspectives of \emph{instances}.
-where \textbf{\emph{Compound Value Type}} (CVT) is a special type to represent complex structured data % where entries are described
-with multiple \emph{properties}, usually organized in a table. Some CVT schemas indeed imply certain events, e.g., \emph{business.acquisition},
-% \emph{military.military\_service} and \emph{people.marriage},
-and closely resemble to event structures, where CVT properties can be treated as event arguments\footnote{
-Therefore, we also use the term ``argument'' to refer to CVT property in the rest of paper.}. % 直接在这里说CVT property其实就是argument，后面描述的时候不会太咯嗦
-As shown in Figure~\ref{fig:3}, the properties of CVT \emph{business.acquisition} actually can be used to label arguments of the events mentioned in S1 and S2.
-We use the Freebase copy of 2013-06,  %version of Berant et al. \shortcite{berant2013semantic},
-containing 1010 CVTs. After manually filtering out those % CVTs that
-describing Freebase structure or irrelevant to events, %(e.g., \emph{food.recipe\_ingredient})
- we obtain 24 CVTs with around 280 million instances.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=.48\textwidth]{figure1.png}
-	\caption{Examples of a CVT table in Freebase, and labeled sentences in our dataset. \emph{Company\_acquired}, \emph{acquiring\_company} and \emph{date} are key arguments in \emph{business.acquisition}. \label{fig:3}}
-\end{figure}
-
-Besides structured knowledge base, tables or lists that are used to sum up certain activities or occasions could be considered as a source of supervision for event extraction, as well.
-We thus investigate tables collected from Wikipedia pages, potentially referring to three types: winning of the Olympics, music and film awards, mergers and acquisitions\footnote{For example, \url{https://en.wikipedia.org/wiki/List_of_mergers_and_acquisitions_by_IBM}}.
+%
+%
+%%
+%%\section{The Event Extraction Task}
+%%%\subsection{Event Definition}
+%%% 给出相关术语的定义，subsection名字起得对吗？
+%%Event extraction aims to detect the occurrence of events with specific types and extract their typed participants or attributes from text. We clarify the following terminologies within our work:
+%%\begin{itemize}
+%%	\item \textbf{Event mention}: a phrase or sentence within which an event is described, including its type and arguments.
+%%	\item \textbf{Argument}: an entity mention, temporal expression or value that is involved in an event, with specific roles.
+%%	\item \textbf{Key argument}: the argument that plays an important role in one event, and helps to distinguish with other events. % 要不要举例说明什么是key argument？这里再举例会不会和introduction里面的举例重复？
+%%	% 没有地方的时候，argument role可以删掉（我看别人ACE定义的时候都讲了这个就先放上来了）
+%%	%\item \textbf{Argument role}: the relationship between an event and its involved argument.
+%%\end{itemize}
+%
+%\subsection{Indirect Supervision for Event}%{Tabular Data}
+%% 缺一句连接的话？
+%We first utilize Freebase~\cite{bollacker2008freebase} as a source of supervision to guide our data construction, %the structured knowledge base.
+%% and there are three basics concepts: \emph{instance}, \emph{type} and \emph{property}. \emph{Instances} are entries in Freebase. \emph{Types} are different perspectives of \emph{instances}.
+%where \textbf{\emph{Compound Value Type}} (CVT) is a special type to represent complex structured data % where entries are described
+%with multiple \emph{properties}, usually organized in a table. Some CVT schemas indeed imply certain events, e.g., \emph{business.acquisition},
+%% \emph{military.military\_service} and \emph{people.marriage},
+%and closely resemble to event structures, where CVT properties can be treated as event arguments\footnote{
+%Therefore, we also use the term ``argument'' to refer to CVT property in the rest of paper.}. % 直接在这里说CVT property其实就是argument，后面描述的时候不会太咯嗦
+%As shown in Figure~\ref{fig:3}, the properties of CVT \emph{business.acquisition} actually can be used to label arguments of the events mentioned in S1 and S2.
+%We use the Freebase copy of 2013-06,  %version of Berant et al. \shortcite{berant2013semantic},
+%containing 1010 CVTs. After manually filtering out those % CVTs that
+%describing Freebase structure or irrelevant to events, %(e.g., \emph{food.recipe\_ingredient})
+% we obtain 24 CVTs with around 280 million instances.
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=.48\textwidth]{figure1.png}
+%	\caption{Examples of a CVT table in Freebase, and labeled sentences in our dataset. \emph{Company\_acquired}, \emph{acquiring\_company} and \emph{date} are key arguments in \emph{business.acquisition}. \label{fig:3}}
+%\end{figure}
+%%
+%Besides structured knowledge base, tables or lists that are used to sum up certain activities or occasions could be considered as a source of supervision for event extraction, as well.
+%We thus investigate tables collected from Wikipedia pages, potentially referring to three types: winning of the Olympics, music and film awards, mergers and acquisitions\footnote{For example, \url{https://en.wikipedia.org/wiki/List_of_mergers_and_acquisitions_by_IBM}}.
 
 \subsection{Dataset Construction\label{datagen}}
 % 在哪里说其实 property 在后面就是 argument 了
