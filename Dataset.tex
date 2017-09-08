@@ -19,30 +19,32 @@
 \end{figure}
 
 
-The task of event extraction is to (1) detect the occurrence of events with specific types and (2) extract arguments (i.e. typed
-participants or attributes) that are associated with an event. As a motivation example, consider a sentence from the Wiki text dataset,
-shown in Figure~\ref{fig:example} (a). This sentence describes a business acquisition event. It consists of three \textbf{arguments},
-\emph{company acquired} (Remedy Corp), \emph{acquiring company} (\emph{BMC Software}), \emph{formed division} (Service Management Business
-Unit) and \emph{date} (2004). To learn an event extractor, existing supervision-based approaches all require manually identifying the event
-type by examining the event trigger from each individual sentence in the training data -- for examples, trigger ``sold" in this example
-indicate there is a business acquisition event.
+%The task of event extraction is to (1) detect the occurrence of events with specific types and (2) extract arguments (i.e. typed
+%participants or attributes) that are associated with an event.
+As a motivation example, consider a sentence from the Wiki text dataset, shown in Figure~\ref{fig:example} (a). This sentence describes a
+business acquisition event. It consists of four \textbf{arguments}, \emph{company acquired} (Remedy Corp), \emph{acquiring company}
+(\emph{BMC Software}), \emph{formed division} (Service Management Business Unit) and \emph{date} (2004). To learn an event extractor,
+existing supervision-based approaches all require manually identifying the event type by examining the event trigger and arguments from
+each individual training instance; for examples, the trigger ``sold" in this sentence  and the company arguments suggest that there is a
+business acquisition event.
 
 %A predictive model is then trained, using supervised machine learning on the labelled training dataset. The model learns the
 %correlation between the properties of a sentence and its corresponding event type. The learned correlations are used to predict the event
-%type for new text.
+%type for new text. If we can find a way to
+%automatically label training data, we can then scale up the training data generation to millions of instances instead of thousands that
+%current approaches are capable of.
 
 The problem of manually labelling is that it takes a lot of time to construct a training dataset and in many cases the resulted dataset is
-too small to learn an effective event extractor. To make the learning process fast and cheap, we must take humans out of the loop of data
-labelling. If we can find a way to automatically label training data, we can then scale up the training data generation to millions of
-instances instead of thousands that current approaches are capable of. We discover that the structural information of Freebase
-(\FB)~\cite{bollacker2008freebase} already provide sufficient information to allow us to automatically label the event type of the
-particular sentence shown in Figure~\ref{fig:example} (a). Figure~\ref{fig:example} (b) shows a Compound Value Type (\CVT) entry of \FB.
-\CVT organizes complex structured data with multiple \emph{properties} as a table\footnote{Therefore, we also use the term ``argument” to
-refer to a \CVT property for the rest of the paper.}. After examining this particular \CVT schema, one can find that this schema implies
-there could be a \emph{business.acquisition} event if the text contains properties (and arguments) like, \texttt{company\_acquired} (Remedy
-Corp), \texttt{acquiring\_company} (BMC Software) and date (2004) -- all these are the identical arguments if they were extracted manually.
-If we can utilize such \CVT information, we can then automatically label the sentence shown in Figure~\ref{fig:example} (a) without needing
-to identify the trigger (which can only be achieved through human annotation if one wants to generate a high-quality training dataset).
+too small to learn an effective event extractor. For example, it took \FIXME{man-months} to label the \FIXME{xxx} instances in the ACE
+dataset. To make the learning process fast and cheap, we must take humans out of the loop of data labelling.  For this particular
+motivation sentence, we discover that the structural knowledge of Freebase (\FB)~\cite{bollacker2008freebase} already provides sufficient
+information to allow us to automatically label the event type. Figure~\ref{fig:example} (b) shows a Compound Value Type (\CVT) entry of
+\FB. A \CVT organizes complex structured data with multiple \emph{properties} as a table\footnote{Therefore, we also use the term
+``argument" to refer to a \CVT property for the rest of the paper.}. After examining this \CVT schema, one can find that this schema
+implies there could be a \emph{business.acquisition} event if the text contains properties (and arguments) like, \texttt{company\_acquired}
+(Remedy Corp), \texttt{acquiring\_company} (BMC Software) and date (2004) -- all these are the identical arguments if they were extracted
+manually. If we can utilize such \CVT information, we can then label the sentence shown in Figure~\ref{fig:example} (a) without needing to
+identify the trigger (which is used done through manual annotation to ensure the quality of the generated training dataset).
 
 
 A natural question to ask is that ``How useful are \CVTs?". Later in this paper, we show that structured knowledge base, tables or lists
@@ -50,9 +52,9 @@ that are used to sum up certain activities can be a useful source of supervision
 just 24 \CVTs, we are able to automatically generate 280 million instances (\FIXME{Section~\ref{}}).
 
 
-In this work, we develop a novel technique to automatically generate training data by exploiting the prior \CVT knowledge offered by
-various datasets, including \FB and Wikiedia pages. Our work shows that it is possible to scale up training data generation for event
-extraction with little human involvement. In the next section, we give an overview before presenting our approach in more details.
+In this work, we develop a novel technique to automatically generate training data by exploiting the prior \CVT knowledge from various
+datasets, including \FB and Wikiedia pages. Our work shows that it is possible to scale up training data generation for event extraction
+with little human involvement. In the next section, we give an overview before presenting our approach in more details.
 
 
 %%
