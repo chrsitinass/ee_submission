@@ -16,11 +16,11 @@ Constructing high-quality training data for event extraction is, however, an exp
 of predefined event types, and the employment of annotators to manually label  large datasets. Because of the drastic efforts required for
 manual labelling, existing training datasets are usually small, covering only a small set of event types. As a result, current event
 extraction systems built upon of human-annotated datasets have two major drawbacks. They can only handle (1) single-token
-triggers\footnote{In the ACE task, a trigger is the word that most clearly expresses the occurrence of an event. For example, \textit{ex}
-in \textit{ex-husband} may trigger a \emph{divorce} event.} and (2 scenarios where  each event is merely associated with a single
-type. In our real-world, however, there are countless examples where trigger annotations are unavailable (\FIXME{ZW: This has nothing to do
-with single-token triggers??} or or one event is associated with multiple types. To make event extractors more practical, we need to find
-ways to support these scenarios.
+triggers\footnote{In the event extraction task, a trigger is the word or phrase that most clearly expresses the occurrence of an event. For
+example, \textit{ex} in \textit{ex-husband} may trigger a \emph{divorce} event.} and (2 scenarios where  each event is merely associated
+with a single type. In our real-world, however, there are countless examples where trigger annotations are unavailable (\FIXME{ZW: This has
+nothing to do with single-token triggers??} or or one event is associated with multiple types. To make event extractors more practical, we
+need to find ways to support these scenarios.
 
 %The aforementioned drawbacks of ACE event extraction systems motivate us to
 %It would be interesting to see (1) can we automatically build a dataset for event extraction without experts involved?
@@ -47,7 +47,13 @@ Our solution is to use a group of \textbf{key arguments} rather than explicit tr
 % According to Mintz et al. \shortcite{mintz2009distant}, because a major source of Freebase is the tabular data from Wikipedia, making it a natural fit with Freebase.
 %Figure~\ref{fig:3} illustrates examples of sentences annotated by our algorithm.
 
-Our second innovation is that unlike previous studies which focus on tasks defined by the ACE evaluation framework \cite{ahn2006stages,li2013joint,chen2015event,nguyen2016joint}, we propose a novel event extraction paradigm with key arguments to characterize an event type. We consider event extraction as two sequence labeling subtasks, namely event detection and argument detection. Inspired by neural network models in sequence labeling tasks \cite{huang2015bidirectional,lample2016neural}, we utilize BLSTM-CRF models to label key arguments and non-key arguments in each sentence separately. However, event structures are not simple sequences and there are strong dependencies among key arguments. We therefore reformulate the hypotheses as constraints, and apply linear integer programming to output multiple optimal label sequences to capture multi-typed events.
+Our second innovation is that unlike previous studies which focus on tasks defined by the ACE evaluation framework
+\cite{ahn2006stages,li2013joint,chen2015event,nguyen2016joint}, we propose a novel event extraction paradigm with key arguments to
+characterize an event type. We consider event extraction as two sequence labeling subtasks, namely event detection and argument detection.
+Inspired by neural network models in sequence labeling tasks \cite{huang2015bidirectional,lample2016neural}, we utilize BLSTM-CRF models to
+label key arguments and non-key arguments in each sentence separately. However, event structures are not simple sequences and there are
+strong dependencies among key arguments. We therefore reformulate the hypotheses as constraints, and apply linear integer programming to
+output multiple optimal label sequences to capture multi-typed events.
 
 We evaluate our approach by applying it to automatically collect training data with both Freebase and Wikipedia tables.
 Our proposed event extractor is used to identify typed event mentions with typed roles. Our experimental
