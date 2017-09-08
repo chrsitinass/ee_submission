@@ -1,14 +1,34 @@
 \begin{abstract}
-Supervised learning is an effective method for building event extraction systems. The effectiveness of the learning heavily depends on
-the quality of the training datasets. Existing event extractor systems are typically built upon expert-annotated datasets. However, due
-to drastic efforts involved in annotating text, these datasets are usually small and cover only a limited variety of event types. This
-limits the quality of learned event extractor, making it hard to generalize. In this paper, we investigate ways to generate training
-datasets that require little expert involvement but can cover a richer set of event types. We achieve this by employing distant
-supervision to automatically create event annotations from unlabelled text using existing structured knowledge bases or tables. We then
-develop a novel neural network model with post inference, to detect multi-typed event mentions \FIXME{ZW: reviewers may not know what is
-a event mention} with corresponding arguments. Experiments on the datasets collected through Freebase and Wikipedia tables show that it
-is possible to learn to extract events of rich types without human-annotated training data. \FIXME{ZW: Will come back to the experimental
-results later.}
+
+Event extraction, which detects the occurrence of events with specific types and extract arguments (i.e. typed participants or
+attributes) that are associated with an event, is an important technique that underpins many natural language processing applications.
+Supervised learning is an effective method for building event extraction systems. The effectiveness of the learning is bound by the
+number and the quality of  the training instances. Currently, training data must be manually generated through a combination of expert
+domain knowledge and trial and error. However, due to drastic efforts involved in annotating text, the resulted datasets are usually
+small, which severally affects the quality of the learned model, making it hard to generalize.
+
+
+Our work develops an automatic approach for generating training data for event extraction. Our technique allows us, for the first time,
+to construct training data with millions of instances instead of just thousands, and it does this at a much lower cost than a manual
+approach. We achieve this remarkable result by employing distant supervision to automatically create event annotations from unlabelled
+text using existing structured knowledge bases or tables. We then develop a neural network model with post inference to transfer the
+knowledge extracted from structured knowledge bases to automatically annotate event types for sentences in another corpus. We evaluate
+our approach by using the knowledge extracted from Freebase to label texts from Wikipedia articles. Experimental results show that our
+approach can generate a large number of high-quality training instances. We show that this large volume of training data not only leads
+to a better event extractor, but also allows us to detect multi-typed events -- a feature that none of the existing event extractors can
+ offer.
+
+
+
+%Supervised learning is an effective method for building event extraction systems. The effectiveness of the learning is bound by the
+%number and the quality of  the training instances. Existing event extractor systems are typically built upon expert-annotated datasets.
+%However, due to drastic efforts involved in annotating text, these datasets are usually small and cover only a limited variety of event
+%types. In this paper, we investigate ways to generate training datasets that require little expert involvement but can cover a richer set
+%of event types. We achieve this by employing distant supervision to automatically create event annotations from unlabelled text using
+%existing structured knowledge bases or tables. We then develop a novel neural network model with post inference, to detect multi-typed
+%event mentions \FIXME{ZW: reviewers may not know what is a event mention} with corresponding arguments. Experiments on the datasets
+%collected through Freebase and Wikipedia tables show that it is possible to learn to extract events of rich types without human-annotated
+%training data. \FIXME{ZW: Will come back to the experimental results later.}
 
 %Existing event extraction systems are typically investigated in a supervised learning paradigm, which heavily relies on the quality of
 %expert-annotated datasets. Due to the drastic efforts involved in text annotation, the human-annotated datasets are typically small, only
