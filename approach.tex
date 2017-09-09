@@ -1,23 +1,24 @@
 \section{Training Data Generation}
 Our approach exploits structural information like \FB \CVT tables to  automatically annotate event mentions\footnote{An event mention is a
 phrase or sentence within which an event is described, including its type and arguments.} in order to generate training data to learn an
-event extractor. Such an approach is known as Distant Supervision (\DS)\FIXME{~\cite{}}. Essentially, we use the knowledge extracted from a
-known knowledge base to label sentences from another dataset to generate training data.
+event extractor. Such an approach is known as Distant Supervision~\cite{mintz2009distant}. Essentially, we use the knowledge extracted from
+a known knowledge base to \emph{distantly supervise} the process of training data generation using another dataset.
 
 
 We use the arguments of a \CVT table entry to infer what event a sentence is likely to express. A \CVT table entry can have multiple
 arguments but not all of the arguments are useful in annotation. For example, the \texttt{divisions\_formed} argument in
 Figure~\ref{fig:example} (b) is not as important as the other three arguments when determining if a sentence expresses a
-\texttt{business.acquisition} event. Therefore, our first step is to identify the key arguments from a \CVT table entry. A key argument is
-an argument that plays an important role in one event, which helps to distinguish with other events. If a sentence contains all key
-arguments of an entry in an event table (e.g. a \CVT table), it is likely to express the event expressed by the table entry. If a sentence
-is labelled as an event mention of a \CVT event, we also record the words or phrases that match the entry’s properties as the involved
-arguments, with the roles specified by their corresponding property names. For instance, sentence S1 shown in Figure~\ref{fig:example} (a)
-is a mention of \texttt{business.acquisition} type, its involved arguments are ``Remedy Corp", ``BMC Software", and ``2004", and the roles
-of the three arguments are \texttt{company\_acquired}, \texttt{acquiring\_company} and \texttt{date} respectively.
+\texttt{business.acquisition} event. Therefore, our first step is to identify the key arguments from a \CVT table entry. A \textbf{key
+argument} is an argument that plays an important role in one event, which helps to distinguish with other events. If a sentence contains
+all key arguments of an entry in an event table (e.g. a \CVT table), it is likely to express the event expressed by the table entry. If a
+sentence is labelled as an event mention of a \CVT event, we also record the words or phrases that match the entry’s properties as the
+involved arguments, with the roles specified by their corresponding property names. For instance, sentence S1 shown in
+Figure~\ref{fig:example} (a) is a mention of \texttt{business.acquisition} type, its involved arguments are ``Remedy Corp", ``BMC
+Software", and ``2004", and the roles of the three arguments are \texttt{company\_acquired}, \texttt{acquiring\_company} and \texttt{date}
+respectively.
 
 In addition to use the raw information given by a \CVT entry, we also use alias information (such as Wikipedia redirect) to match two
-arguments that have different literal name but refer to the same entity (e.g. Microsoft and MS).
+arguments that have different literal names but refer to the same entity (e.g. Microsoft and MS).
 
 \subsection{Determining Key Arguments}
 We use the following formula to calculate the importance value, $I_{cvt, arg}$, of an argument \emph{arg} (e.g., date) to its event type
@@ -33,12 +34,12 @@ where $count(cvt)$ is the number of instances of type $cvt$ within a \CVT table,
 \FIXME{explain how do you come up with this formula.}
 
 
-Our strategy for selecting key arguments of a given event type is described as follows.
+Our strategy for selecting key arguments of a given event type is described as follows:
 
 \begin{description}
 
 \item [P1] For a \CVT table with $n$ arguments, we first calculate the important value of each argument. Next, we sort the arguments
-    according to their importance values in descending order, so that arguments with the higher importance values will appear on the top
+    according to their importance values in descending order, so that arguments with the highest importance values will appear on the top
     of the list. We then consider the top half $\ceil[\big]{n/2}$ (rounding up) arguments on the sorted list as key arguments.
 
 \item [P2] We find that time-related arguments are useful in determining the event type, so we always include time-related arguments
@@ -50,13 +51,13 @@ Our strategy for selecting key arguments of a given event type is described as f
 \end{description}
 
 Using this strategy, the first three argument of the CVT entry are considered to be key arguments for event typ
-\texttt{business.acquisition}.
+\texttt{business.acquisition}. \FIXME{Here we should give the importance values for all arguments in S1.}
 
 
 \subsection{Key Argument Selection Parameters}
 To determine how many arguments should be chosen (step P1 in our strategy), we have conducted a series of evaluations on the quantity and
-quality of the datasets using different key argument selection policies. We found that the using the top half arguments sorted by their
-important scores gives the best accuracy.
+quality of the datasets using different policies. We found that choosing the top half arguments (sorted by their importance scores) gives
+the best accuracy for event labeling.
 
 We use three example sentences from the Wiki text dataset to explain steps P2 and P3 in our key argument selection strategy described
 above. The three sentences are:
@@ -105,17 +106,19 @@ as a positive sample for event \texttt{business.acquisition}. Therefore, we alwa
 P2) if these are given on the \CVT entry.
 
 Finally, step P3 is based on our intuitions that two arguments involved in the same event mention are likely to be closer within the
-syntactic structure. As an example, consider S4 and its dependency parse tree shown in Figure~\ref{fig:2}. Although both \emph{Prince
-Philip} and \emph{marriage} can be matched as key arguments in a  \texttt{people.marriage} entry, but with a distance of 3 (i.e., far from
-each other under our criterion) on the dependency parse tree, thus S4 will be labelled as negative.
+syntactic structure. As an example, consider S4. The dependency parse tree of this sentence is given in Figure~\ref{fig:2}. As can be seen
+from the diagram, although both \emph{Prince Philip} and \emph{marriage} can be matched as key arguments in a  \texttt{people.marriage}
+entry, but with a distance of 3 (i.e., far from each other under our criterion) on the dependency parse tree, thus S4 will be labelled as
+negative.
 
 \subsection{Limitations}
-Our approach relies on structural tables or lists to automatically label text. The table can be obtained from an existing knowledge base or
-hand-crafted by developers. We want to highlight that providing a structural table incurs much less overhead than manually tagging each
-training sentence, as a single table entry can be automatically applied to many sentences.  Like all supervision-based event extractors,
-our approach does not support detecting new event types that are not seen in the training data. However, our approach provides an easy way
-to extend the structural table to support new types, i.e., by adding new entries to the table.
+Our approach relies on structured tables or lists to automatically label text. The table can be obtained from an existing knowledge base or
+hand-crafted by developers. We want to highlight that providing a table incurs much less overhead than manually tagging each training
+sentence, as a single table entry can be automatically applied to many sentences.  Like all supervision-based event extractors, our
+approach does not support detecting new event types that are not seen in the training data. However, our approach does offer an easy way to
+extend the structured table to support new types, i.e., by adding new entries to the table.
 
 
-Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} can be used to find out which
-word a pronoun refers to. These works are complementary to our approach. Integrating our work with co-reference methods is our future work.
+Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} that can be used to find out
+which word a pronoun refers to. These works are therefore complementary to our approach. Integrating our work with co-reference methods is
+our future work.

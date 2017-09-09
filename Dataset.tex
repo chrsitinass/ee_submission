@@ -14,7 +14,7 @@
         \end{tabular}
 
    }
-  \caption{The event type of the sentence shown in (a) can be automatically inferred using the structural information given by Freebase in (b).}
+  \caption{The event type of the sentence shown in (a) can be automatically inferred using the structured table given by Freebase in (b).}
   \label{fig:example}
 \end{figure}
 
@@ -34,23 +34,23 @@ there is a business acquisition event.
 %automatically label training data, we can then scale up the training data generation to millions of instances instead of thousands that
 %current approaches are capable of.
 
-The problem of manually labelling is that it takes a lot of time to construct a training dataset and in many cases the resulted dataset is
+The problem of manually labeling is that it takes a lot of time to construct a training dataset and in many cases the resulted dataset is
 too small to learn an effective event extractor. For example, it took \FIXME{man-months} to label the \FIXME{xxx} instances in the ACE
-dataset. To make the learning process fast and cheap, we must take humans out of the loop of data labelling.  For this particular
-motivation sentence, we discover that the structural knowledge of Freebase (\FB)~\cite{bollacker2008freebase} already provides sufficient
-information to allow us to automatically label the event type. Figure~\ref{fig:example} (b) shows a Compound Value Type (\CVT) entry of
-\FB. A \CVT organizes complex structured data with multiple \emph{properties} as a table\footnote{Therefore, we also use the term
-``argument" to refer to a \CVT property for the rest of the paper.}. After examining this \CVT schema, one can find that this schema
-implies there could be a \emph{business.acquisition} event if the text contains properties (and arguments) like, \texttt{company\_acquired}
-(Remedy Corp), \texttt{acquiring\_company} (BMC Software) and date (2004) -- all these are the identical arguments if they were extracted
-manually. If we can utilize such \CVT information, we can then label the sentence shown in Figure~\ref{fig:example} (a) without needing to
-identify the trigger (which is used done through manual annotation to ensure the quality of the generated training dataset).
+dataset. To make the learning process fast and cheap, we must take humans out of the loop of data labeling.  For this particular motivation
+sentence, we discover that the structural knowledge of Freebase (\FB)~\cite{bollacker2008freebase} already provides sufficient information
+to allow us to automatically label the event type. Figure~\ref{fig:example} (b) shows a Compound Value Type (\CVT) entry of \FB. A \CVT
+organizes complex structured data with multiple \emph{properties} as a table\footnote{Therefore, we also use the term ``argument" to refer
+to a \CVT property for the rest of the paper.}. After examining this \CVT schema, one can find that this schema implies there could be a
+\emph{business.acquisition} event if the text contains properties (and arguments) like, \texttt{company\_acquired} (Remedy Corp),
+\texttt{acquiring\_company} (BMC Software) and date (2004) -- all these are the identical arguments if they were extracted manually. If we
+can utilize such \CVT information, we can then label the sentence shown in Figure~\ref{fig:example} (a) without needing to identify the
+trigger (which is usually done by manual annotation to ensure the quality of the generated training dataset).
 
 
 A natural question to ask is that ``How useful are \CVTs?". Later in this paper, we show that structured knowledge base, tables or lists
 that are used to sum up certain activities can be a useful source of supervision data generation for event extraction. For example, using
-just 24 \CVTs, we are able to automatically generate 2.8 billions instances from a subset of the Wikipedia articles
-(\FIXME{Section~\ref{}}).
+just 24 \CVTs, we are able to automatically generate \FIXME{2.8 billions} \FIXME{is this true?} instances from a subset of the Wikipedia
+articles (\FIXME{Section~\ref{}}).
 
 
 This work develops a simple, yet effective technique to automatically generate training data by exploiting the prior \CVT knowledge from
