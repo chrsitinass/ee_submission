@@ -108,3 +108,14 @@ Finally, step P3 is based on our intuitions that two arguments involved in the s
 syntactic structure. As an example, consider S4 and its dependency parse tree shown in Figure~\ref{fig:2}. Although both \emph{Prince
 Philip} and \emph{marriage} can be matched as key arguments in a  \texttt{people.marriage} entry, but with a distance of 3 (i.e., far from
 each other under our criterion) on the dependency parse tree, thus S4 will be labelled as negative.
+
+\subsection{Limitations}
+Our approach relies on structural tables or lists to automatically label text. The table can be obtained from an existing knowledge base or
+hand-crafted by developers. We want to highlight that providing a structural table incurs much less overhead than manually tagging each
+training sentence, as a single table entry can be automatically applied to many sentences.  Like all supervision-based event extractors,
+our approach does not support detecting new event types that are not seen in the training data. However, our approach provides an easy way
+to extend the structural table to support new types, i.e., by adding new entries to the table.
+
+
+Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} can be used to find out which
+word a pronoun refers to. These works are complementary to our approach. Integrating our work with co-reference methods is our future work.
