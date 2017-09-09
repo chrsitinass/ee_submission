@@ -7,7 +7,7 @@
         \scriptsize
         \begin{tabular}{llllp{1.6cm}}
         \toprule
-        & company\_acquired & acquiring\_company & date & divisions\_formed\\
+        id & company\_acquired & acquiring\_company & date & divisions\_formed\\
         \midrule
         m.07bh4j7 & Remedy Corp & BMC Software & 2004 & Service Management Business Unit\\
         \bottomrule
@@ -49,7 +49,8 @@ identify the trigger (which is used done through manual annotation to ensure the
 
 A natural question to ask is that ``How useful are \CVTs?". Later in this paper, we show that structured knowledge base, tables or lists
 that are used to sum up certain activities can be a useful source of supervision data generation for event extraction. For example, using
-just 24 \CVTs, we are able to automatically generate 280 million instances (\FIXME{Section~\ref{}}).
+just 24 \CVTs, we are able to automatically generate 2.8 billions instances from a subset of the Wikipedia articles
+(\FIXME{Section~\ref{}}).
 
 
 This work develops a simple, yet effective technique to automatically generate training data by exploiting the prior \CVT knowledge from
@@ -107,69 +108,69 @@ details.
 
 
 
-\subsection{Dataset Construction\label{datagen}}
-% 在哪里说其实 property 在后面就是 argument 了
-Here, we employ the event-related entries of Freebase CVT tables to illustrate how to automatically annotate event mentions in Wikipedia's articles, with the essence of distant supervision (\textbf{\texttt{DS}}): \textit{A sentence that contains \textbf{all key arguments} of an entry in an event table (e.g., CVT table) is likely to express that event}.
-%\begin{quote}
-%	\textbf{\texttt{DS}}: A sentence that contains all key arguments of an entry in an event table (e.g., CVT table) is likely to express that event in some way.
-%\end{quote}
-We will then label this sentence as a mention of this CVT event, and the words or phrases that match this entry's properties as the involved arguments, with the roles specified by their corresponding property names.
-
-We regard a sentence as \emph{positive} when it mentions the occurrence of an event, or  \emph{negative} otherwise.
-For example, S1 and S2 are positive examples with their arguments in italics and underlined (also shown in Figure~\ref{fig:3}), while S3 and S4 are negative.
+%\subsection{Dataset Construction\label{datagen}}
+%% 在哪里说其实 property 在后面就是 argument 了
+%Here, we employ the event-related entries of Freebase CVT tables to illustrate how to automatically annotate event mentions in Wikipedia's articles, with the essence of distant supervision (\textbf{\texttt{DS}}): \textit{A sentence that contains \textbf{all key arguments} of an entry in an event table (e.g., CVT table) is likely to express that event}.
+%%\begin{quote}
+%%	\textbf{\texttt{DS}}: A sentence that contains all key arguments of an entry in an event table (e.g., CVT table) is likely to express that event in some way.
+%%\end{quote}
+%We will then label this sentence as a mention of this CVT event, and the words or phrases that match this entry's properties as the involved arguments, with the roles specified by their corresponding property names.
 %
-\begin{quote}
-	\textbf{S1}: \underline{\emph{Remedy Corp}} was sold to \underline{\emph{BMC Software}} as the \underline{\emph{Service}} \underline{\emph{Management Business Unit}} in \underline{\emph{2004}}.
-\end{quote}
-\begin{quote}
-\textbf{S2}: \underline{\emph{Microsoft}} spent \$6.3 billion buying online display advertising company \underline{\emph{aQuantive}} in \underline{\emph{2007}}.
-\end{quote}
-\begin{quote}
-\textbf{S3}: Microsoft hopes aQuantive's Brian McAndrews can outfox Google.
-\end{quote}
-\begin{quote}
-\textbf{S4}: On April 29th, Elizabeth II and Prince Philip witnessed the marriage of Prince William.
-\end{quote}
-
-The selection strategy for key arguments of a given event type is based on two criteria: (1) \emph{Key arguments should have high importance value}; (2) \emph{Key arguments should include time-related arguments}.
-% \paragraph{H1: Positive sentences should contain all properties}
-
-% For example, S1 contains all the properties of instance $m.07bh4j7$ with a CVT type \emph{business.acquisition}, we thus consider S1 as a positive sample implying an event about \emph{business.acquisition}, and \emph{BMC Software}, \emph{Remedy Corp}, \emph{Service Management Business Unit} and \emph{2004} will be labeled as the arguments that play the role of \emph{acquiring\_company}, \emph{company\_acquired}, \emph{divisions\_formed}, and \emph{date} in this event, respectively.
-% However, in practice, we realize that \emph{H1} is too strict that excludes a great many positive sentences like S2.
-% In practice, we find that \emph{H1} is too strict to include many positive sentences like S2.
-% We thus relax \emph{H1} by replacing \textbf{all properties} with \textbf{all key properties}.
-
-The \emph{importance value} of an argument $arg$ (e.g., \emph{date}) to its event type $cvt$ (e.g., \emph{business.acquisition}) can be defined as:
-\begin{equation}
-	I_{cvt, arg} = log \frac{count(cvt, arg)}{count(cvt) \times count(arg)}
-\end{equation}
-where $count(cvt)$ is the number of instances of type $cvt$, $count(arg)$ is the number of times $arg$ appearing in all CVT types, and $count(cvt, arg)$ is the number of $cvt$ instances that contain $arg$.
-
-% We discover that for many CVTs, their key properties do not take into account time property.
-% time-related argument叫得对吗？本来的想说的是，取值为时间的argument
-Although time-related arguments are often missing in the currently imperfect KBs,
-they are indeed crucial to indicate the actual occurrence of an event, e.g., S3, containing \emph{Microsoft} as \emph{acquiring\_company} and \emph{aQuantive} as \emph{company\_acquired} but without time-related arguments, will be mistakenly considered as a positive sample for event \emph{business.acquisition}.
-% while contain all key properties of an instance, resulting in mistaking \emph{Microsoft} for \emph{acquiring\_company}, and \emph{aQuantive} for \emph{company\_acquired}.
-% By adding \emph{date} to the set of key properties, S3 will be filtered.
-
-Intuitively, two arguments involving in the same event mention are likely to be closer within the syntactic structure.
-% , which will help to eliminate negative samples.
-% We thus set the maximum distance between two key arguments as 2 empirically.
-%, i.e., for a candidate sentence, if a pair of key arguments violates this constraint, it is supposed to be negative.
-% Given the dependency parsing tree in Figure~\ref{fig:2}, S4 is negative because the distance between \emph{Prince Philip} and \emph{marriage} is 3.
-
-\begin{figure}
-\centering
-	\includegraphics[width=.48\textwidth]{figure2.png}
-	\caption{The dependency tree of S4, which partially matches an entry of \emph{people.marriage}. \label{fig:2}}
-\end{figure}
-
-We conduct a series of manual evaluations on the quantity and quality of the datasets produced by different strategies (see Sec~\ref{sec:evalhypo}), and
-% following strategy produces the best dataset, thus serves as
-our final strategy is:
-for each CVT, we first sort all its arguments in descending order by their importance values, and select the top half arguments as key arguments.
-We then include the time-related argument with highest importance value as a supplementary key argument.
-Finally, we eliminate sentences in which the dependency distances between any two key arguments are greater than 2.
+%We regard a sentence as \emph{positive} when it mentions the occurrence of an event, or  \emph{negative} otherwise.
+%For example, S1 and S2 are positive examples with their arguments in italics and underlined (also shown in Figure~\ref{fig:3}), while S3 and S4 are negative.
+%%
+%\begin{quote}
+%	\textbf{S1}: \underline{\emph{Remedy Corp}} was sold to \underline{\emph{BMC Software}} as the \underline{\emph{Service}} \underline{\emph{Management Business Unit}} in \underline{\emph{2004}}.
+%\end{quote}
+%\begin{quote}
+%\textbf{S2}: \underline{\emph{Microsoft}} spent \$6.3 billion buying online display advertising company \underline{\emph{aQuantive}} in \underline{\emph{2007}}.
+%\end{quote}
+%\begin{quote}
+%\textbf{S3}: Microsoft hopes aQuantive's Brian McAndrews can outfox Google.
+%\end{quote}
+%\begin{quote}
+%\textbf{S4}: On April 29th, Elizabeth II and Prince Philip witnessed the marriage of Prince William.
+%\end{quote}
+%
+%The selection strategy for key arguments of a given event type is based on two criteria: (1) \emph{Key arguments should have high importance value}; (2) \emph{Key arguments should include time-related arguments}.
+%% \paragraph{H1: Positive sentences should contain all properties}
+%
+%% For example, S1 contains all the properties of instance $m.07bh4j7$ with a CVT type \emph{business.acquisition}, we thus consider S1 as a positive sample implying an event about \emph{business.acquisition}, and \emph{BMC Software}, \emph{Remedy Corp}, \emph{Service Management Business Unit} and \emph{2004} will be labeled as the arguments that play the role of \emph{acquiring\_company}, \emph{company\_acquired}, \emph{divisions\_formed}, and \emph{date} in this event, respectively.
+%% However, in practice, we realize that \emph{H1} is too strict that excludes a great many positive sentences like S2.
+%% In practice, we find that \emph{H1} is too strict to include many positive sentences like S2.
+%% We thus relax \emph{H1} by replacing \textbf{all properties} with \textbf{all key properties}.
+%
+%The \emph{importance value} of an argument $arg$ (e.g., \emph{date}) to its event type $cvt$ (e.g., \emph{business.acquisition}) can be defined as:
+%\begin{equation}
+%	I_{cvt, arg} = log \frac{count(cvt, arg)}{count(cvt) \times count(arg)}
+%\end{equation}
+%where $count(cvt)$ is the number of instances of type $cvt$, $count(arg)$ is the number of times $arg$ appearing in all CVT types, and $count(cvt, arg)$ is the number of $cvt$ instances that contain $arg$.
+%
+%% We discover that for many CVTs, their key properties do not take into account time property.
+%% time-related argument叫得对吗？本来的想说的是，取值为时间的argument
+%Although time-related arguments are often missing in the currently imperfect KBs,
+%they are indeed crucial to indicate the actual occurrence of an event, e.g., S3, containing \emph{Microsoft} as \emph{acquiring\_company} and \emph{aQuantive} as \emph{company\_acquired} but without time-related arguments, will be mistakenly considered as a positive sample for event \emph{business.acquisition}.
+%% while contain all key properties of an instance, resulting in mistaking \emph{Microsoft} for \emph{acquiring\_company}, and \emph{aQuantive} for \emph{company\_acquired}.
+%% By adding \emph{date} to the set of key properties, S3 will be filtered.
+%
+%Intuitively, two arguments involving in the same event mention are likely to be closer within the syntactic structure.
+%% , which will help to eliminate negative samples.
+%% We thus set the maximum distance between two key arguments as 2 empirically.
+%%, i.e., for a candidate sentence, if a pair of key arguments violates this constraint, it is supposed to be negative.
+%% Given the dependency parsing tree in Figure~\ref{fig:2}, S4 is negative because the distance between \emph{Prince Philip} and \emph{marriage} is 3.
+%
+%\begin{figure}
+%\centering
+%	\includegraphics[width=.48\textwidth]{figure2.png}
+%	\caption{The dependency tree of S4, which partially matches an entry of \emph{people.marriage}. \label{fig:2}}
+%\end{figure}
+%
+%We conduct a series of manual evaluations on the quantity and quality of the datasets produced by different strategies (see Sec~\ref{sec:evalhypo}), and
+%% following strategy produces the best dataset, thus serves as
+%our final strategy is:
+%for each CVT, we first sort all its arguments in descending order by their importance values, and select the top half arguments as key arguments.
+%We then include the time-related argument with highest importance value as a supplementary key argument.
+%Finally, we eliminate sentences in which the dependency distances between any two key arguments are greater than 2.
 
 % 好像没地方了，先不写了
 % \begin{table}

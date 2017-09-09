@@ -16,6 +16,9 @@ arguments, with the roles specified by their corresponding property names. For i
 is a mention of \texttt{business.acquisition} type, its involved arguments are ``Remedy Corp", ``BMC Software", and ``2004", and the roles
 of the three arguments are \texttt{company\_acquired}, \texttt{acquiring\_company} and \texttt{date} respectively.
 
+In addition to use the raw information given by a \CVT entry, we also use alias information (such as Wikipedia redirect) to match two
+arguments that have different literal name but refer to the same entity (e.g. Microsoft and MS).
+
 \subsection{Determining Key Arguments}
 We use the following formula to calculate the importance value, $I_{cvt, arg}$, of an argument \emph{arg} (e.g., date) to its event type
 \emph{cvt} (e.g., \texttt{business.acquisition}):
@@ -27,18 +30,36 @@ We use the following formula to calculate the importance value, $I_{cvt, arg}$, 
 
 where $count(cvt)$ is the number of instances of type $cvt$ within a \CVT table, $count(arg)$ is the number of times $arg$ appearing in all
 \CVT types within a \CVT table, and $count(cvt, arg)$ is the number of $cvt$ instances that contain $arg$ across all \CVT tables.
+\FIXME{explain how do you come up with this formula.}
 
 
-Our strategy for selecting key arguments of a given event type is described as follows. We first calculate the important value of each
-argument. Next, we sort the arguments according to their importance values in descending order, so that arguments with the higher
-importance values will appear on the top of the list. We then consider arguments on the top half of the list as key arguments. Furthermore,
-we find that time-related arguments are useful in determining the event type, so we always include time-related arguments (such as date) in
-the key argument set. Using this strategy, the first three argument of the CVT entry are considered to be key arguments for event type
+Our strategy for selecting key arguments of a given event type is described as follows.
+
+\begin{description}
+
+\item [P1] For a \CVT table with $n$ arguments, we first calculate the important value of each argument. Next, we sort the arguments
+    according to their importance values in descending order, so that arguments with the higher importance values will appear on the top
+    of the list. We then consider the top half $\ceil[\big]{n}$ (rounding up) arguments on the sorted list as key arguments.
+
+\item [P2] We find that time-related arguments are useful in determining the event type, so we always include time-related arguments
+    (such as date) in the key argument set.
+
+\item [P3] We also remove sentences from the generated dataset in which the dependency distances between any two key arguments are
+    greater than 2.
+
+\end{description}
+
+Using this strategy, the first three argument of the CVT entry are considered to be key arguments for event typ
 \texttt{business.acquisition}.
 
 
-\subsection{Justification of Key Argument Selection Strategy}
-We use three example sentences from the Wiki text dataset to justify our key argument selection strategy. The three sentences are:
+\subsection{Key Argument Selection Parameters}
+To determine how many arguments should be chosen (step P1 in our strategy), we have conducted a series of evaluations on the quantity and
+quality of the datasets using different key argument selection policies. We found that the using the top half arguments sorted by their
+important scores gives the best accuracy.
+
+We use three example sentences from the Wiki text dataset to explain steps P2 and P3 in our key argument selection strategy described
+above. The three sentences are:
 
 \begin{quote}
 \textbf{S2}: \underline{\emph{Microsoft}} spent \$6.3 billion buying online display advertising company \underline{\emph{aQuantive}} in
@@ -50,15 +71,40 @@ We use three example sentences from the Wiki text dataset to justify our key arg
 \begin{quote}
 \textbf{S4}: On April 29th, Elizabeth II and Prince Philip witnessed the marriage of Prince William.
 \end{quote}
+
+\begin{table}
+ \scriptsize
+ \caption{\CVT entry of \texttt{business.acquisition} in \FB. \label{tbl:bs}}
+        \begin{tabular}{llllc}
+        \toprule
+        id & company\_acquired & acquiring\_company & date & divisions\_formed\\
+        \midrule
+        m.05nb3y7 & aQuantive & Microsoft & 2007 & N/A\\
+        \bottomrule
+        \end{tabular}
+\end{table}
+
+
 \begin{figure}
 \centering
 	\includegraphics[width=.48\textwidth]{figure2.png}
-	\caption{The dependency tree of S4, which partially matches an entry of \emph{people.marriage}. \label{fig:2}}
+	\caption{The dependency tree of S3, which partially matches a \CVT entry of \emph{people.marriage} from \FB. \label{fig:2}}
 \end{figure}
+
+
 We regard a sentence as \emph{positive} when it mentions the occurrence of an event, or  \emph{negative} otherwise. For example, S1 in
-Figure~\ref {fig:example} (a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
+Figure~\ref {fig:example} (a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative. We
+wish to minimize the number of negative sentences to be labelled as positive (i.e., false positive) and to maximize  the number of true
+positive sentences to be labelled as their correct events.
 
+Although time-related arguments are often missing in the currently imperfect \KBs, they are crucial to identify the actual occurrence of an
+event. As an example, suppose we want to use the \CVT entry shown in Table~\ref{tbl:bs} to determine if sentence S3 is a
+\texttt{business.acquistion} event. This sentence contains \emph{Microsoft} as \texttt{acquiring\_company} and \emph{aQuantive} as
+\texttt{company\_acquired}. If we ignore the time-related argument (i.e., date in this case), this setence could be mistakenly considered
+as a positive sample for event \texttt{business.acquisition}. Therefore, we always consider time-related arguments as key arguments (step
+P2) if these are given on the \CVT entry.
 
-Intuitively, two arguments involved in the same event mention are likely to be closer within the syntactic structure.  In
-Figure~\ref{fig:2}, both \emph{Prince Philip} and \emph{marriage} can be matched as key arguments in a \textit{people.marriage} entry, but
-are far from each other on the dependency parse tree, thus S4 should be labelled as negative.
+Finally, step P3 is based on our intuitions that two arguments involved in the same event mention are likely to be closer within the
+syntactic structure. As an example, consider S4 and its dependency parse tree shown in Figure~\ref{fig:2}. Although both \emph{Prince
+Philip} and \emph{marriage} can be matched as key arguments in a  \texttt{people.marriage} entry, but with a distance of 3 (i.e., far from
+each other under our criterion) on the dependency parse tree, thus S4 will be labelled as negative.
