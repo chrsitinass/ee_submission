@@ -39,7 +39,7 @@ Our strategy for selecting key arguments of a given event type is described as f
 
 \item [P1] For a \CVT table with $n$ arguments, we first calculate the important value of each argument. Next, we sort the arguments
     according to their importance values in descending order, so that arguments with the higher importance values will appear on the top
-    of the list. We then consider the top half $\ceil[\big]{n}$ (rounding up) arguments on the sorted list as key arguments.
+    of the list. We then consider the top half $\ceil[\big]{n/2}$ (rounding up) arguments on the sorted list as key arguments.
 
 \item [P2] We find that time-related arguments are useful in determining the event type, so we always include time-related arguments
     (such as date) in the key argument set.
