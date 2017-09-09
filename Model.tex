@@ -1,8 +1,8 @@
-\section{Event Extraction Model}
-Once we have automatically labelled a large number of training instances, we can then use the training data to learn an event extractor to
-detect the occurrence of events from \emph{unseen} text. In this section, we present a novel neural network based event extractor which
-does not rely on explicit trigger information (and hence it eliminates the need for manually labelling triggers when collecting training
-data).
+\section{Event Detection and Argument Extraction}
+Once we have automatically labelled a large number of training instances, we can then use the training data to learn a model to detect the
+occurrence of events and the associated arguments from \emph{unseen} text. In this section, we present a novel neural network based model
+ which does not rely on explicit trigger information (and hence it eliminates the need for manually labelling triggers to generate
+ training data).
 
 %\subsection{Our Task}
 Previous event extraction systems mainly rely on explicit trigger identification to detect the occurrence of an event, which is then used
@@ -29,24 +29,49 @@ Take S1 as an example, in event detection, \emph{Remedy Corp}, \emph{BMC Softwar
 
 %\paragraph{Tagging scheme}
 There are 68\%  of  arguments in our dataset consist of more than one word. We thus formulate each subtask in a sequence labeling paradigm
-rather than word-level classifications. Each word in the given sentence is tagged with the widely used begin-inside-outside (\texttt{BIO})
+rather than word-level classifications. Each word in the given sentence is tagged with standard begin-inside-outside (\texttt{BIO})
 scheme\FIXME{\cite{}}, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its corresponding
 role \texttt{role}, or \texttt{I-role} if it is inside an argument, or \texttt{O} otherwise.
 
 
-Figure~\ref{fig:model} provides an overview of our event detection model. Our event detection model has two key components, a bidirectional
-LSTM (BLSTM) model with a conditional random field (CRF) layer and a Integer Linear Programming (ILP) based post inference. The input to
-our model is the raw text. The embedding layer maps the input text to a vector of real values, where each token of the text is mapped to an
-integer value. The BLSTM and CRF layers find the optimal label sequence which will then be post-processed by the ILP-based layer.
-
+Figure~\ref{fig:model} provides an overview of our event detection model. The model has two key components, a bidirectional LSTM (BLSTM)
+network with a conditional random field (CRF) layer and a Integer Linear Programming (ILP) based post inference. The input to our model is
+the raw text. The embedding layer maps the input text to a vector of real values, where each token of the text is mapped to an integer
+value. The BLSTM and CRF layers find the optimal label sequence which will then be post-processed by the ILP-based layer. The labelling
+sequence tags each word with its role using the \BIO scheme. Figure~\ref{fig:ls} shows the labelling sequence for sentence S1 given in
+Figure~\ref{fig:example} (a).  Using the labelling sequence, an event detector can then simply map the sentence to a specific event type,
+using the detected key arguments and their properties. It is to note that our model may generate multiple labelling sequences for
+multi-typed events, one sequence for an event type.
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{figs/model.pdf}
   \caption{Our event detection model.}\label{fig:model}
 \end{figure}
 
+\begin{figure}
+\centering
+\scriptsize
+\begin{tabular}{lllllll}
+\toprule
+Remedy & Corp & was & sold & to & BMC & \\
+\rowcolor{Gray} \texttt{B-com.\_acq.} & \texttt{I-comp.\_acq.} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{B-acq.\_comp.} &\\
+\end{tabular}
+\begin{tabular}{lllllll}
+Software & as & the & Service & Management & Business & Unit\\
+\rowcolor{Gray} \texttt{I-acq.\_comp.} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{O}\\
+in & 2004 &.&&&&\\
+\rowcolor{Gray} \texttt{O} & \texttt{B-date} &&&&&\\
+\bottomrule
+\end{tabular}
+
+\caption{The labelling sequence for sentence S1 shown in Figure~\ref{fig:example} (a). Each token of the sentence is tagged using the \BIO
+scheme. \label{fig:ls}}
+
+\end{figure}
+
+
 \paragraph{BLSTM}
-The Long Short-Term Memory Network (LSTM)~\cite{hochreiter1997long} is a natural fit for sequence labeling, which maintains a memory based
+The Long Short-Term Memory (LSTM) network~\cite{hochreiter1997long} is a natural fit for sequence labeling, which maintains a memory based
 on historical contextual information. Formally, given a sentence $\bm{w} = \{w_1, w_2, \dots, w_n\}$ of length $n$, we use $\textbf{x}_t$
 to represent feature vector, e.g., word embeddings, corresponding to the $t$-th word $w_t$. At each time $t$, a forward LSTM layer takes
 $\textbf{x}_t$ as input and computes the output vector $\overrightarrow{\textbf{h}}_t$ of the past context, while a backward LSTM layer
@@ -119,4 +144,6 @@ After event detection, a sentence will be classified into different event types,
 %The next step is argument detection, which
 Next, we will identify the remaining non-key arguments in the sentence.
 
-We adopt the same BLSTM-CRF architecture (in Sec~\ref{evede}) for argument detection, where we encode the event label (output of event detection) of each word into a key-argument feature vector through a look-up table, and concatenate it with the original word embedding as the input to the new BLSTM-CRF. Note that we do not need post inference here.
+We adopt the same BLSTM-CRF architecture (that is used for event detection) for argument detection, where we encode the event label (output
+of event detection) of each word into a key-argument feature vector through a look-up table, and concatenate it with the original word
+embedding as the input to the new BLSTM-CRF. Note that we do not need post inference here.
