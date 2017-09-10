@@ -1,17 +1,21 @@
 \section{Event and Argument Detection}
-This section presents a novel neural network based model for event and argument detection. Our model does not rely on explicit trigger
-information. Hence it eliminates the need for manually labeling triggers to generate training data.
+%This section presents a novel neural network based model for event and argument detection.
 
-%\subsection{Our Task}
-Previous event extraction systems mainly rely on explicit trigger identification to detect the occurrence of an event, which is then used
-to decide its event type and label its arguments. Because identifying triggers is widely considered as a difficult task, human involvement
-is required\FIXME{~\cite{}}. In our automatically collected dataset, where human-labeled event triggers are unavailable, we argue that
-\textbf{key arguments} can play the same role as explicit event triggers. We thus treat the event extraction as a pipeline of the following
-two steps:
+Unlike prior works, our event detection model does not rely on explicit trigger information. Instead, we represent the event extraction as
+a pipeline of detecting key and non-key arguments:
+
+%Hence it eliminates the need for manually labeling triggers to generate training data.
+%
+%%\subsection{Our Task}
+%Previous event extraction systems mainly rely on explicit trigger identification to detect the occurrence of an event, which is then used
+%to decide its event type and label its arguments. Because identifying triggers is widely considered as a difficult task, human involvement
+%is required\FIXME{~\cite{}}. In our automatically collected dataset, where human-labeled event triggers are unavailable, we argue that
+%\textbf{key arguments} can play the same role as explicit event triggers. We thus treat the event extraction as a pipeline of the following
+%two steps:
 
 \begin{description}
-	\item [Event and key argument detection]  To identify key arguments in a sentence. If a sentence contains \textbf{all key arguments} of a specific event type, it will be considered to imply an event mention of this specified type.
-	\item [Non-key argument detection] To identify other non-key arguments for each event in the sentence.
+	\item [Event and key argument detection]  This task identifies key arguments in a sentence. If a sentence contains \textbf{all key arguments} of a specific event type, it will be considered to imply an event mention of this specified type.
+	\item [Non-key argument detection] This task identifies other non-key arguments for each event in the sentence.
 \end{description}
 
 \begin{figure}[t!]
@@ -24,7 +28,7 @@ Figure~\ref{fig:model} depicts our two-stage pipeline. \FIXME{Describe the pipel
 
 \paragraph{Labeling Scheme}
 Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
-than word-level classifications. Each word in the given sentence is tagged using \texttt{BIO}) scheme (see Figure~\ref{fig:ls}).
+than word-level classifications. Each word in the given sentence is tagged using the \texttt{BIO} scheme (see Figure~\ref{fig:ls}).
 
 \subsection{Event and Key Argument Detection \label{evede}}
 %Before presenting our model,
@@ -35,11 +39,11 @@ than word-level classifications. Each word in the given sentence is tagged using
 %\paragraph{Tagging scheme}
 
 Our model for event detection has two key components, a Bidirectional LSTM (BLSTM) network with a conditional random field (CRF) layer and
-an Integer Linear Programming (ILP) based post inference. The input to our model is the raw text. The BLSTM and CRF layers find the optimal
+an Integer Linear Programming (ILP) based post inference. The input to our model is the raw text. The BLSTM-CRF layer finds the optimal
 labeling sequence which will then be post-processed by an ILP solver. It is to note that at this stage we do not concern non-key arguments
-and all non-key arguments token will be tagged as \texttt{O}.  Using the labeling sequence, an event detector can then simply map the
-sentence to a specific event type, using the detected key arguments and their properties. If multiple labeling sequences are generated, our
-model will map each sequence to an event type. This essentially implements a multi-typed event detection scheme.
+and all non-key arguments tokens will be tagged as \texttt{O}.  Using the labeling sequence, an event detector can then simply map the
+sentence to a specific event type, checking if a sentence cotains all the key arguments of an event type. If multiple labeling sequences
+are generated, our model will map each sequence to an event type. This essentially implements a multi-typed event detection scheme.
 
 \paragraph{BLSTM}
 The Long Short-Term Memory (LSTM) network~\cite{hochreiter1997long} is a natural fit for sequence labeling, which maintains a memory based
