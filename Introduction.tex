@@ -6,35 +6,70 @@
 %or, \textit{ex} in \textit{ex-husband} triggers a \emph{divorce} event?
 %Besides, ACE event extraction systems have two major limitations:   single-token trigger labeling, and one type for one event.
 
-Event extraction, as represented by the Automatic Content Extraction (ACE) task, is a key enabling technique for many natural language
-processing (NLP) applications.  Current event extractors are typically built through applying supervised learning to learn over labelled
-datasets. This means that the performance of event extraction systems highly dependent on the quality and coverage of the training
-datasets.
+Event extraction is a key enabling technique for many natural language processing (NLP) tasks. The goal of event extraction is to detect,
+from the text, the occurrence of events with specific types, and to extract arguments (i.e. typed participants or attributes) that are
+associated with an event. Current event extractor systems are typically built through applying supervised learning to learn over labelled
+datasets. This means that the performance of the learned model is bound by the quality and coverage of the training datasets.
 
-Constructing high-quality training data for event extraction is, however, an expensive and error-prone process
-\cite{aguilar2014comparison,song2015light}. This requires the involvement of linguists to design annotation templates and rules for a set
-of predefined event types, and the employment of annotators to manually label  large datasets. Because of the drastic efforts required for
-manual labeling, existing training datasets are usually small, covering only a small set of event types. As a result, current event
-extraction systems built upon of human-annotated datasets have two major drawbacks. They can only handle (1) single-token
-triggers\footnote{In the event extraction task, a trigger is the word or phrase that most clearly expresses the occurrence of an event. For
-example, \textit{ex} in \textit{ex-husband} may trigger a \emph{divorce} event.} and (2 scenarios where  each event is merely associated
-with a single type. In our real-world, however, there are countless examples where trigger annotations are unavailable (\FIXME{ZW: This has
-nothing to do with single-token triggers??} or or one event is associated with multiple types. To make event extractors more practical, we
-need to find ways to support these scenarios.
+To generate training data for event extraction, existing approaches all require manually identifying -- if an event occurs and of what type
+-- by examining the event trigger\footnote{In the event extraction task, a trigger is the word or phrase that most clearly expresses the
+occurrence of an event. For example, \textit{ex} in \textit{ex-husband} may trigger a \emph{divorce} event.} and arguments from each
+individual training instance. This process requires the involvement of linguists to design annotation templates and rules for a set of
+predefined event types, and the employment of annotators to manually label if an individual instance belongs to a predefined event type.
+
+
+To determine an event type, existing approaches  all require \emph{explicitly} identifying the event trigger from the text to associate the
+text with an event. Because identifying event triggers is non-trivial~\FIXME{\cite{}}, human involvement is deemed necessary. However, this
+thus makes the quality and the number of the generated instances directly dependent on the skill and available time of the
+annotators~\cite{aguilar2014comparison,song2015light}. To scale up event extractor training, we therefore must take human annotators out
+from the loop of data labeling.
+
+
+This work develops a novel approach to automatically label training instances for event extraction. Our key insight was that while event
+triggers are useful, they do not have to be explicitly captured. Structured knowledge bases (\KBs) such as Freebase already provide rich
+information of arguments, which is organized as structured tables,  to enable us to automatically infer the event type without explicitly
+knowing the trigger. For example, an \emph{marriage} event does not need to be identified through finding the \emph{married} trigger, as a
+\emph{spouse} argument also implies
+such an event. %In this paper, we show that structured tables in some knowledge bases already imply the occurrence of certain events.
+
+
+If we can find ways to exploit structured tables or lists, a single entry can then be used to label a large number instances without the
+involvement of human annotators. Such an approach is known as distant supervision (\DS). Recent
+studies~\cite{mintz2009distant,zeng2015distant} have demonstrated its effectiveness in various NLP tasks. The central idea of of \DS is to
+use the knowledge extracted from a known knowledge base to \emph{distantly supervise} the process of training data generation using another
+dataset. By employing \DS, our approach is able to produce a large number of high-quality training instances.
+
+Under this new \DS paradigm, we develop a novel event extractor architecture based on neural networks and linear integer programming. One
+of the key innovations of our approach is that the model does not rely on explicit trigger information. Instead, it uses a set of key
+arguments to characterize an event type. As a result, it eliminates the need to explicitly identify the event trigger, a process that
+requires heavy human involvement.
+
+We evaluate our approach by  applying it to perform sentence-level event extraction. To generate training data, we use Freebase to
+automatically label texts from a subset of Wikipedia articles. We then learn an event extractor using the generated data and use the
+learned model to extract events from unseen Wikipedia articles.
+
+Using \FIXME{24} structured tables from Freebase, we are able to generate over 100 thousands training instances within two hours. This
+results in a training dataset that is 100x greater than the widely used ACE dataset -- which took \FIXME{xx man-months} to
+build\FIXME{~\cite{}}. We show that the quality of the automatically generated dataset is comparable to ones that were manually constructed
+by human experts. Experimental results show that our new approach of data generation and modeling not only allows building a more efficient
+event extractor, but also enables multi-typed event detection -- a feature that none of the existing event extractors offers -- but is much
+needed.
+
+
 
 %The aforementioned drawbacks of ACE event extraction systems motivate us to
 %It would be interesting to see (1) can we automatically build a dataset for event extraction without experts involved?
 %and (2) can we have an event extractor that handles more realistic scenarios, e.g.,  when trigger annotations are unavailable, or events with more than one type.
 
 
-This paper presents a novel approach for automatic training data generation, specifically targeting event extraction. Our approach advances prior work in two aspects: (1) it does not rely on expert-annotated texts (hence it reduces expert involvement)
-and (2) supports multi-typed event extraction. The former is achieved by automatically collecting training data through indirect supervision from structured knowledge bases or knowledge tables to automatically label event structures from plain text. The later is achieved by proposing a novel neural network model with post inference to detect multi-typed events without relying on explicit trigger annotations.
+%This paper presents a novel approach for automatic training data generation, specifically targeting event extraction. Our approach advances prior work in two aspects: (1) it does not rely on expert-annotated texts (hence it reduces expert involvement)
+%and (2) supports multi-typed event extraction. The former is achieved by automatically collecting training data through indirect supervision from structured knowledge bases or knowledge tables to automatically label event structures from plain text. The later is achieved by proposing a novel neural network model with post inference to detect multi-typed events without relying on explicit trigger annotations.
 
-Our first insight is that structured knowledge bases (\KB) typically organize
-complex structured information in tables; and such knowledge tables often share similar structures with ACE event definitions, i.e., a particular entry of such tables usually implies the occurrence of certain events.
-Recent studies \cite{mintz2009distant,zeng2015distant} have demonstrated the effectiveness of \KB as distant supervision (\DS) for binary relation extraction. In this paper, we aim to extend \DS to extract events of n-ary relations and multiple arguments (rather than just binary
-relation). One of the hurdles for doing this is the lacking of explicit trigger information in existing \KB.
-Our solution is to use a group of \textbf{key arguments} rather than explicit triggers to capture a particular event. For example, we can use \emph{spouse} as the key argument to identify \emph{marriage} events.
+%Our first insight is that structured knowledge bases (\KB) typically organize
+%complex structured information in tables; and such knowledge tables often share similar structures with ACE event definitions, i.e., a particular entry of such tables usually implies the occurrence of certain events.
+%Recent studies \cite{mintz2009distant,zeng2015distant} have demonstrated the effectiveness of \KB as distant supervision (\DS) for binary relation extraction. In this paper, we aim to extend \DS to extract events of n-ary relations and multiple arguments (rather than just binary
+%relation). One of the hurdles for doing this is the lacking of explicit trigger information in existing \KB.
+%Our solution is to use a group of \textbf{key arguments} rather than explicit triggers to capture a particular event. For example, we can use \emph{spouse} as the key argument to identify \emph{marriage} events.
 
 
 %However, there are two major challenges when leveraging KB to event extraction: first, event structures are more complex than binary relations. They can be represented as $\langle event\_type, argument_1, \ldots, argument_n\rangle$, which are n-ary relations with various numbers of arguments. Second, there is no explicit trigger information in any existing knowledge base.
@@ -47,17 +82,17 @@ Our solution is to use a group of \textbf{key arguments} rather than explicit tr
 % According to Mintz et al. \shortcite{mintz2009distant}, because a major source of Freebase is the tabular data from Wikipedia, making it a natural fit with Freebase.
 %Figure~\ref{fig:3} illustrates examples of sentences annotated by our algorithm.
 
-Our second innovation is that unlike previous studies which focus on tasks defined by the ACE evaluation framework
-\cite{ahn2006stages,li2013joint,chen2015event,nguyen2016joint}, we propose a novel event extraction paradigm with key arguments to
-characterize an event type. We consider event extraction as two sequence labeling subtasks, namely event detection and argument detection.
-Inspired by neural network models in sequence labeling tasks \cite{huang2015bidirectional,lample2016neural}, we utilize BLSTM-CRF models to
-label key arguments and non-key arguments in each sentence separately. However, event structures are not simple sequences and there are
-strong dependencies among key arguments. We therefore reformulate the hypotheses as constraints, and apply linear integer programming to
-output multiple optimal label sequences to capture multi-typed events.
+%Our second innovation is that unlike previous studies which focus on tasks defined by the ACE evaluation framework
+%\cite{ahn2006stages,li2013joint,chen2015event,nguyen2016joint}, we propose a novel event extraction paradigm with key arguments to
+%characterize an event type. We consider event extraction as two sequence labeling subtasks, namely event detection and argument detection.
+%Inspired by neural network models in sequence labeling tasks \cite{huang2015bidirectional,lample2016neural}, we utilize BLSTM-CRF models to
+%label key arguments and non-key arguments in each sentence separately. However, event structures are not simple sequences and there are
+%strong dependencies among key arguments. We therefore reformulate the hypotheses as constraints, and apply linear integer programming to
+%output multiple optimal label sequences to capture multi-typed events.
 
-We evaluate our approach by applying it to automatically collect training data with both Freebase and Wikipedia tables.
-Our proposed event extractor is used to identify typed event mentions with typed roles. Our experimental
-results on both automatic and
-manual evaluations show that our approach can effectively extract a rich types of events without expert-annotated training data. %\FIXME{quantified numbers?}
+%We evaluate our approach by applying it to automatically collect training data with both Freebase and Wikipedia tables.
+%Our proposed event extractor is used to identify typed event mentions with typed roles. Our experimental
+%results on both automatic and
+%manual evaluations show that our approach can effectively extract a rich types of events without expert-annotated training data. %\FIXME{quantified numbers?}
 
 %In this paper, we exploit existing structured knowledge bases, e.g., Freebase, as distant supervision to automatically annotate event structures from plain text without human annotations. We further propose a novel event extraction paradigm that harnesses key arguments to imply certain event types without explicit trigger annotations. We present an BLSTM-CRF model with post inference to extract both Freebase-style events as well as multi-type event mentions on the generated dataset, which is demonstrated effective by both manual and automatic evaluations.

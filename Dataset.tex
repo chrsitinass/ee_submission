@@ -21,42 +21,34 @@
 
 %The task of event extraction is to (1) detect the occurrence of events with specific types and (2) extract arguments (i.e. typed
 %participants or attributes) that are associated with an event.
-As a motivation example, consider a sentence from the Wiki text dataset, shown in Figure~\ref{fig:example} (a). This sentence describes a
-business acquisition event. It consists of four \textbf{arguments}, \emph{company acquired} (Remedy Corp), \emph{acquiring company}
-(\emph{BMC Software}), \emph{formed division} (Service Management Business Unit) and \emph{date} (2004). To learn an event extractor,
-existing supervision-based approaches all require manually identifying the event type by examining the event trigger and arguments from
-each individual training instance; for this examples, the trigger ``\emph{sold}" and the acquired/acquring company arguments suggest that
-there is a business acquisition event.
-
-%A predictive model is then trained, using supervised machine learning on the labelled training dataset. The model learns the
-%correlation between the properties of a sentence and its corresponding event type. The learned correlations are used to predict the event
-%type for new text. If we can find a way to
-%automatically label training data, we can then scale up the training data generation to millions of instances instead of thousands that
-%current approaches are capable of.
-
-The problem of manually labeling is that it takes a lot of time to construct a training dataset and in many cases the resulted dataset is
-too small to learn an effective event extractor. For example, it took \FIXME{man-months} to label the \FIXME{xxx} instances in the ACE
-dataset. To make the learning process fast and cheap, we must take humans out of the loop of data labeling.  For this particular motivation
-sentence, we discover that the structural knowledge of Freebase (\FB)~\cite{bollacker2008freebase} already provides sufficient information
-to allow us to automatically label the event type. Figure~\ref{fig:example} (b) shows a Compound Value Type (\CVT) entry of \FB. A \CVT
-organizes complex structured data with multiple \emph{properties} as a table\footnote{Therefore, we also use the term ``argument" to refer
-to a \CVT property for the rest of the paper.}. After examining this \CVT schema, one can find that this schema implies there could be a
-\emph{business.acquisition} event if the text contains properties (and arguments) like, \texttt{company\_acquired} (Remedy Corp),
-\texttt{acquiring\_company} (BMC Software) and date (2004) -- all these are the identical arguments if they were extracted manually. If we
-can utilize such \CVT information, we can then label the sentence shown in Figure~\ref{fig:example} (a) without needing to identify the
-trigger (which is usually done by manual annotation to ensure the quality of the generated training dataset).
+As a motivation example, consider a sentence extracted from a Wikipedia article, shown in Figure~\ref{fig:example} (a). To detect the event
+type, traditional approaches require identifying the trigger, \emph{sold}, and associating it with an event type -- a business acquisition
+event in this case.
 
 
-A natural question to ask is that ``How useful are \CVTs?". Later in this paper, we show that structured knowledge base, tables or lists
-that are used to sum up certain activities can be a useful source of supervision data generation for event extraction. For example, using
-just 24 \CVTs, we are able to automatically generate 100 thousands instances from a subset of the Wikipedia articles
-(\FIXME{Section~\ref{}}).
+For this particular sentence, identifying the trigger is not necessary for determining the event type. Figure~\ref{fig:example} (b) shows a
+Compound Value Type (\CVT) entry from Freebase (\FB)~\cite{bollacker2008freebase}. Here, a \CVT organizes complex structured data with
+multiple \emph{properties} in a table\footnote{Therefore, we also use the term ``argument" to refer to a \CVT property for the rest of the
+paper.}. Using this \CVT schema, one can easily map the three arguments of sentence S1, \emph{Remedy Corp}, \emph{BMC Software}, and
+\emph{2004}, respectively to their prosperities, \texttt{company\_acquired}, \texttt{acquiring\_company}, and \texttt{date}. Here each
+property essentially describes the role of an argument in the sentence; and in combination, all arguments define a
+\texttt{business.acquisition} event.
 
+This example shows that \CVT information can be used to infer event type without explicit trigger information. If we can utilize such \CVT
+information, we can then label sentences without needing to explicitly identifying the trigger. As a result, we can free annotators from
+the labour-intensive manual process. In this work, we develop a simple, yet effective technique to automatically generate training data by
+exploiting the prior \CVT knowledge.
 
-This work develops a simple, yet effective technique to automatically generate training data by exploiting the prior \CVT knowledge from
-various datasets, including \FB and Wikiedia pages. Our work shows that it is possible to scale up training data generation for event
-extraction with little human involvement. In the next section, we describe g our approach of automatic traning data generation in more
-details.
+A natural question to ask is that ``How useful are \CVT-like structured information?". Later in this paper, we show that structured
+knowledge base, tables or lists that are used to sum up certain activities can be a useful source of supervision data generation for event
+extraction -- using 24 \CVTs, we managed to automatically generate 100 thousands instances from a subset of the Wikipedia articles.
+
+%
+%This work develops a simple, yet effective technique to automatically generate training data by exploiting the prior \CVT knowledge from
+%%various datasets, including \FB and Wikiedia pages. Our work shows that it is possible to scale up training data generation for event
+%%extraction with little human involvement.
+%In the next section, we describe g our approach of automatic traning data generation in more
+%details.
 
 
 %%

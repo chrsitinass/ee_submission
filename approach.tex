@@ -1,24 +1,19 @@
 \section{Training Data Generation}
 Our approach exploits structural information like \FB \CVT tables to  automatically annotate event mentions\footnote{An event mention is a
 phrase or sentence within which an event is described, including its type and arguments.} in order to generate training data to learn an
-event extractor. Such an approach is known as Distant Supervision~\cite{mintz2009distant}. Essentially, we use the knowledge extracted from
-a known knowledge base to \emph{distantly supervise} the process of training data generation using another dataset.
+event extractor. We use the arguments of a \CVT table entry to infer what event a sentence is likely to express. A \CVT table entry can
+have multiple arguments but not all of them are useful in determining the occurrence of an event. For instance, the
+\texttt{divisions\_formed} argument in Figure~\ref{fig:example} (b) is not as important as the other three arguments when determining if a
+sentence expresses a \texttt{business.acquisition} event.
 
 
-We use the arguments of a \CVT table entry to infer what event a sentence is likely to express. A \CVT table entry can have multiple
-arguments but not all of the arguments are useful in annotation. For example, the \texttt{divisions\_formed} argument in
-Figure~\ref{fig:example} (b) is not as important as the other three arguments when determining if a sentence expresses a
-\texttt{business.acquisition} event. Therefore, our first step is to identify the key arguments from a \CVT table entry. A \textbf{key
-argument} is an argument that plays an important role in one event, which helps to distinguish with other events. If a sentence contains
-all key arguments of an entry in an event table (e.g. a \CVT table), it is likely to express the event expressed by the table entry. If a
-sentence is labelled as an event mention of a \CVT event, we also record the words or phrases that match the entry’s properties as the
-involved arguments, with the roles specified by their corresponding property names. For instance, sentence S1 shown in
-Figure~\ref{fig:example} (a) is a mention of \texttt{business.acquisition} type, its involved arguments are ``Remedy Corp", ``BMC
-Software", and ``2004", and the roles of the three arguments are \texttt{company\_acquired}, \texttt{acquiring\_company} and \texttt{date}
-respectively.
-
-In addition to use the raw information given by a \CVT entry, we also use alias information (such as Wikipedia redirect) to match two
-arguments that have different literal names but refer to the same entity (e.g. Microsoft and MS).
+Our first step for training data generation is to identify the key arguments from a \CVT table entry. A \textbf{key argument} is an
+argument that plays an important role in one event, which helps to distinguish with other events. If a sentence contains all key arguments
+of an entry in an event table (e.g. a \CVT table), it is likely to express the event expressed by the table entry. If a sentence is
+labelled as an event mention of a \CVT event, we also record the words or phrases that match the entry's properties as the involved
+arguments, with the roles specified by their corresponding property names. For instance, sentence S1 shown in Figure~\ref{fig:example} (a)
+is a mention of \texttt{business.acquisition} type, its involved arguments are ``Remedy Corp", ``BMC Software", and ``2004", and the roles
+of the three arguments are \texttt{company\_acquired}, \texttt{acquiring\_company} and \texttt{date} respectively.
 
 \subsection{Determining Key Arguments}
 We use the following formula to calculate the importance value, $I_{cvt, arg}$, of an argument \emph{arg} (e.g., date) to its event type
@@ -111,7 +106,9 @@ To generate training data, we follow a number of steps. Our approach takes in ex
 way similar to the \FB \CVT tables. The structured tables can be obtained from an existing knowledge base, created by experts, or generated
 through a combination of both approaches. For each event type, we determine the key arguments for each entry within that type used the key
 argument selection strategy described above. This step produces a set of rules to be used for data labeling, where each rule contains the
-event type, key arguments and non-key-arguments given by a structured table entry.
+event type, key arguments and non-key-arguments given by a structured table entry. In addition to use the raw information given by a \CVT
+entry, we also use alias information (such as Wikipedia redirect) to match two arguments that have different literal names but refer to the
+same entity (e.g. Microsoft and MS).
 
 Next, we label each individual sentence from the target dataset. The labeling process  is straightforward. We enumerate all rules from the
 generate rule set, and check if the target sentence contains all the key arguments specified by a rule. We regard a sentence as a
