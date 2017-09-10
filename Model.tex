@@ -41,8 +41,8 @@ than word-level classifications. Each word in the given sentence is tagged using
 Our model for event detection has two key components, a Bidirectional LSTM (BLSTM) network with a conditional random field (CRF) layer and
 an Integer Linear Programming (ILP) based post inference. The input to our model is the raw text. The BLSTM-CRF layer finds the optimal
 labeling sequence which will then be post-processed by an ILP solver. It is to note that at this stage we do not concern non-key arguments
-and all non-key arguments tokens will be tagged as \texttt{O}.  Using the labeling sequence, an event detector can then simply map the
-sentence to a specific event type, checking if a sentence cotains all the key arguments of an event type. If multiple labeling sequences
+and all non-key arguments tokens will be tagged as \texttt{O}.  Using the labeling sequence, an event detector then simply maps the
+sentence to a specific event type, checking if a sentence contains all the key arguments of that event type. If multiple labeling sequences
 are generated, our model will map each sequence to an event type. This essentially implements a multi-typed event detection scheme.
 
 \paragraph{BLSTM}

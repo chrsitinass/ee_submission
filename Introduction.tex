@@ -26,10 +26,10 @@ from the loop of data labeling.
 
 
 This work develops a novel approach to automatically label training instances for event extraction. Our key insight was that while event
-triggers are useful, they do not have to be explicitly captured. Structured knowledge bases (\KBs) such as Freebase already provide rich
-information of arguments, which is organized as structured tables,  to enable us to automatically infer the event type without explicitly
-knowing the trigger. For example, an \emph{marriage} event does not always have to be identified through finding the \emph{married}
-trigger, as a \emph{spouse} argument also implies
+triggers are useful, they do not always need to be explicitly captured. Structured knowledge bases (\KBs) such as Freebase already provide
+rich information of arguments, organizing as structured tables, to enable us to automatically infer the event type. For example, an
+\emph{marriage} event does not always have to be identified through finding the \emph{married} trigger, as a \emph{spouse} argument also
+implies
 such an event. %In this paper, we show that structured tables in some knowledge bases already imply the occurrence of certain events.
 
 
@@ -41,8 +41,8 @@ dataset. By employing \DS, our approach is able to produce a large number of hig
 
 Under this new \DS paradigm, we develop a novel event extractor architecture based on neural networks and linear integer programming. One
 of the key innovations of our approach is that the model does not rely on explicit trigger information. Instead, it uses a set of key
-arguments to characterize an event type. As a result, it eliminates the need to explicitly identify the event trigger, a process that
-requires heavy human involvement.
+arguments to characterize an event type. As a result, it eliminates the need to explicitly identify event triggers, a process that requires
+heavy human involvement.
 
 We evaluate our approach by  applying it to perform sentence-level event extraction. To generate training data, we use Freebase to
 automatically label texts from a subset of Wikipedia articles. We then learn an event extractor using the generated data and use the
@@ -51,9 +51,9 @@ learned model to extract events from unseen Wikipedia articles.
 Using \FIXME{24} structured tables from Freebase, we are able to generate over 100 thousands training instances within two hours. This
 results in a training dataset that is 100x greater than the widely used ACE dataset -- which took \FIXME{xx man-months} to
 build\FIXME{~\cite{}}. We show that the quality of the automatically generated dataset is comparable to ones that were manually constructed
-by human experts. Experimental results show that our new approach of data generation and modeling not only allows building a more efficient
-event extractor, but also enables multi-typed event detection -- a feature that none of the existing event extractors offers -- but is much
-needed.
+by human experts. Experimental results also confirm that this new paradigm of data generation and modeling not only allows us to build a
+more efficient event extractor, but also unlocks the potential of multi-typed event detection -- a feature that none of the existing event
+extractors offers, but is much needed.
 
 
 
