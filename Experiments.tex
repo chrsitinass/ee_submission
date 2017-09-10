@@ -26,7 +26,7 @@ randomly select 100 sentences from each dataset, and ask two annotators to decid
 	T1 & \emph{ALL} & 203 & 9 & 98\% \\ \hline
 	T2 & \emph{IMP} & 318K & 24 & 22\% \\ \hline
 	T3 & \emph{IMP}+\emph{DIS} & 170K & 24 & 37\% \\ \hline
-	T4 & \emph{IMP\&TIME} & 68K & 24 & 83\% \\ \hline
+	T4 & \emph{IMP\&TIME} & 112K & 24 & 83\% \\ \hline
 	T5 & \emph{IMP\&TIME}+\emph{DIS} & 46K & 24 & 91\% \\ \hline
 \end{tabular}
 \caption{Statistics of the datasets built with different strategies. 
@@ -37,14 +37,14 @@ randomly select 100 sentences from each dataset, and ask two annotators to decid
 As shown in Table~\ref{tab:3}, it is not surprising that \emph{T1}, as the most strict, guarantees the quality of the collected data, but only contributes 203 sentences covering 9 event types, which is far from sufficient for further applications. \emph{T2} relaxes \emph{T1} by allowing the absence of non-key arguments, which expands the resulting dataset, but introduces more noise. 
 We can also see that the dependency constraint (DIS) improves the data quality (\emph{T3}).
 %indicating that \emph{T2} is inappropriate to be used as a soft constraint. 
-Compared with \emph{T2}, the significant quality improvement by \emph{T4} proves that time-related arguments within CVT schemas are critical to imply an event occurrence. Among all strategies, the dataset by \emph{T5} achieves the best quality, while still accounting for 46735 sentences, almost 8 times more than the ACE dataset, showing that it is feasible to automatically collect quality training data for event extraction without either human-designed event schemas or \textbf{extra} human annotations.     
+Compared with \emph{T2}, the significant quality improvement by \emph{T4} proves that time-related arguments within CVT schemas are critical to imply an event occurrence. Among all strategies, the dataset by \emph{T5} achieves the best quality, while still accounting for 46735 sentences with 50109 events, almost 8 times more than the ACE dataset, showing that it is feasible to automatically collect quality training data for event extraction without either human-designed event schemas or \textbf{extra} human annotations.     
 % our hypothesis \emph{H3} and \emph{H4} are feasible and it is an effective way to generate reliable data automatically.
 
 
-Our final dataset, \textbf{FBWiki}, using \emph{T5} , contains 46735 positive sentences and 79536 negative 
-ones\footnote{TODO: how to sample negative samples}, a random split of 101019 for 
-training and 25252 for testing. Note that there are averagely \textbf{xxxx} arguments per event, 
- and in total, 5.6\% instances labeled with more than two types of events. 
+Our final dataset, \textbf{FBWiki}, using \emph{T5}, contains 46735 positive sentences and 79536 negative 
+ones\footnote{To train a better system, besides trivial negative samples that have no arguments, we then randomly sample 34837 negative instances that contain serveral but not all key arguments, and 21866 sentences whose key arguments violate the dependency constraint.}
+ a random split of 101019 for 
+training and 25252 for testing. Note that there are averagely 4.8 arguments per event, and in total, 5.5\% instances labeled with more than two types of events. 
 %Statistics for the generated dataset from Freebase is shown in Table~\ref{statistics}. 
 %\begin{table}
 %\small
@@ -62,9 +62,6 @@ training and 25252 for testing. Note that there are averagely \textbf{xxxx} argu
 %\label{statistics}}
 %\end{table}
 
-% TODO: 介绍如何抽样构造负例
-%\paragraph{Negative samples:} 
-
 %%%% containing 7,180 sentences, containing 7,394 events and 25,840 arguments. We then randomly select 4,800 sentences for training and 1,180 sentences as test set, and the rest 1,200 sentences for validation. 
 %We first manually evaluate the quality of our test set and then regard the automatically generated data as gold standard and evaluate our model accordingly. Next, we manually evaluate a subset of events detected by our model and analyze the differences with regards to the automatic evaluation. Finally, we conduct evaluation on a smaller dataset constructed according to Wikipedia tables and articles. 
 
@@ -73,7 +70,7 @@ training and 25252 for testing. Note that there are averagely \textbf{xxxx} argu
 We first collect all annotated events, without triggers, as the knowledge base
 to compute the importance values for all arguments, and select the key arguments 
 for each ACE event type accordingly.  We follow \textit{T5} to examine every sentence
-whether it can be selected as an annotated instance within  the ACE event types.
+whether it can be selected as an annotated instance within the ACE event types.
 Eventually, we correctly find 3448 sentences as positive instances, covering 
 64.7\% of the original ACE dataset.  We find that the main reason for the 
 missing 35.3\% is that many arguments in the ACE dataset are pronouns, 
@@ -86,9 +83,9 @@ our solution would be able to automatically label more instances as training dat
 Next, we evaluate our event extractor on the collected datasets,
 %\paragraph{Metrics:} We evaluate our models 
 in terms of popular metrics in event extraction, i.e., precision (P), recall (R), and F-measure (F) for each subtask. These metrics are computed according to the following standards of correctness: 
-For \emph{event type classification}, an event is correctly classified if its reference sentence contains \textbf{all key arguments} of this event type. 
-For \emph{event detection}, an event is correctly detected if its type and all its key arguments match a reference event within the same sentence.
-For \emph{argument detection}, an argument is correctly detected if its offsets, role, and related event type exactly match the reference argument within the same sentence. 
+For \emph{event classification}, an event is correctly classified if its reference sentence contains \textbf{all key arguments} of this event type. 
+For \emph{key argument detection}, an event is correctly detected if its type and all its key arguments match a reference event within the same sentence.
+For \emph{all argument detection}, an event is correctly extracted if its type and all its arguments match a reference event within the same sentence. 
 
 \paragraph{Training:} All hyper-parameters are tuned on a development split in the training set. During event detection, we set the size of word embeddings to 200, the size of LSTM layer to 100. In argument detection, we use the same size of word embedding, while the size of LSTM layer is 150, and the size of key argument embedding is 50. Word embeddings are pre-trained using skip-gram word2vec~\cite{mikolov2013distributed} on English Wikipedia and fine tuned during training. We apply dropout (0.5) on both input and output layers.
 
@@ -101,10 +98,11 @@ We compare our proposed model with three baselines. %including traditional featu
 %following a \textbf{two-step pipeline, i.e., event detection and argument detection.?????}
 %For neural network baslines, we train 
 The first is a  BLSTM model that takes word embeddings as input, and outputs the label for each word with the maximum probability. % among all possible labels. 
-For feature-based methods, we apply Conditional Random Field \cite{lafferty2001conditional} (with the CRF++ toolkit~\cite{kudo2005crf++} ) and Maximum Entropy \cite{berger1996maximum} (Le Zhang's MaxEnt toolkit) to explore a variety of elaborate features, such as lexical, syntactic and entity-related features, according to the state-of-art feature-based ACE event extraction system~\cite{li2013joint}. Note that during argument detection stage, we add the event detection label for each word  as a supplementary feature. 
+For feature-based methods, we apply Conditional Random Field \cite{lafferty2001conditional} (with the CRF++ toolkit~\cite{kudo2005crf++} ) and Maximum Entropy \cite{berger1996maximum} (Le Zhang's MaxEnt toolkit) to explore a variety of elaborate features, such as lexical, syntactic and entity-related features, according to the state-of-art feature-based ACE event extraction system~\cite{li2013joint}. 
+% Note that during argument detection stage, we add the event detection label for each word as a supplementary feature.
 
-All models are first required to predict each word with a label indicating whether \textbf{XXXXXXXXXXXXX}
- 
+All models are first required to predict each word with a label indicating whether \textbf{it is in an key argument, and add the resulting label of each word as a supplementary feature to predict whether it is in a non-key argument}. 
+
 %We use Stanford CoreNLP \cite{manning2014stanford} for feature extraction, and utilize the CRF++ toolkit~\cite{kudo2005crf++} and Le Zhang's MaxEnt toolkit \footnote{\url{https://github.com/lzhang10/maxent}} to train the CRF and Max Entropy classifiers, respectively.
 
 \subsection{Compare with Automatic Annotations}
@@ -113,22 +111,22 @@ As shown in Table~\ref{tab:1}, traditional feature-based models perform worst in
 One of the main reasons is the absence of explicit event trigger annotations in our dataset, which makes it impossible to include trigger-related features, e.g., trigger-related dependency features and position features. 
 Although traditional models can achieve higher precisions, they only extract a limited number of events, resulting in low recalls. 
 Neural-network methods perform much better than feature-based models, especially in recall, since they can make better use of word semantic features. Specifically, BLSTM can capture longer dependencies and richer contextual information, instead of neighbouring word features only.
-And the CRF component brings an averagely 4\% improvement in all metrics, and by adding the ILP-based post inference module, our full model, BLSTM-CRF-ILP$_{multi}$, achieves the best performance among all models. 
+And the CRF component brings an averagely 2\% improvement in all metrics, and by adding the ILP-based post inference module, our full model, BLSTM-CRF-ILP$_{multi}$, achieves the best performance among all models. 
 % Moreover, neural-network-based methods can avoid errors propagating from other NLP preprocessing tools like POS tagging and NER.
 
 \begin{table*}[!t]
 \centering
 \small
-\begin{tabular}{|l|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|} \hline
-	\multirow{2}{*}{Model} & \multicolumn{3}{c|}{Event Classification} & \multicolumn{3}{c|}{Argument Detection} &
-	\multicolumn{3}{c|}{Event Detection} \\ \cline{2-10}
+\begin{tabular}{|l|p{1.cm}<{\centering}|p{1.cm}<{\centering}|p{1.cm}<{\centering}|p{1.cm}<{\centering}|p{1.cm}<{\centering}|p{1.cm}<{\centering}|p{1.cm}<{\centering}|p{1.cm}<{\centering}|p{1.cm}<{\centering}|} \hline
+	\multirow{2}{*}{Model} & \multicolumn{3}{c|}{Event Classification} & \multicolumn{3}{c|}{Key Argument Detection} &
+	\multicolumn{3}{c|}{All Argument Detection} \\ \cline{2-10}
 	 & P & R & F & P & R & F & P & R & F \\ \hline
-	CRF &  &  &  &  &  &  &  &  &  \\ \hline
-	MaxEnt &  &  &  &  &  &  &  &  &  \\ \hline
-	BLSTM &  &  &  &  &  &  &  &  &   \\ \hline \hline
-	BLSTM-CRF &  &  &  &  &  &  &  &  &   \\ \hline
-	BLSTM-CRF-ILP$_{1}$ &  &  &  &  &  &  &  &  &  \\ \hline
-	BLSTM-CRF-ILP$_{multi}$ &  &  &  &  &  &  &  &  &  \\ \hline
+	CRF & 88.9 & 11.0 & 19.6 & 36.1 & 4.47 & 7.96 & 19.9 & 3.06 & 5.30  \\ \hline
+	MaxEnt & \textbf{95.2} & 12.4 & 21.9 & 41.6 & 5.40 & 9.56 & 22.5 & 3.40 & 5.91 \\ \hline
+	BLSTM & 89.8 & 63.0 & 74.1 & \textbf{64.9} & 45.5 & 53.5 & 42.9 & 27.7 & 33.7  \\ \hline \hline
+	BLSTM-CRF & 86.4 & 67.4 & 75.7 & 63.6 & 49.6 & 55.8 & \textbf{44.4} & 31.0 & 36.5  \\ \hline
+	BLSTM-CRF-ILP$_{1}$ & 84.4 & 74.1 & 78.9 & 62.3 & 53.8 & 57.3 & 42.7 & 33.8 & 37.7 \\ \hline
+	BLSTM-CRF-ILP$_{multi}$ & 85.3 & \textbf{79.9} & \textbf{82.5} & 60.4 & \textbf{55.3} & \textbf{57.7} & 41.9 & \textbf{34.6} & \textbf{37.9} \\ \hline
 \end{tabular}
 \caption{System performance when compared with automatic annotations (\%).  \label{tab:1}}
 \end{table*}
@@ -141,17 +139,16 @@ And the CRF component brings an averagely 4\% improvement in all metrics, and by
 It is not surprising that  every model with a CRF layer over its BLSTM layer is superior to the one with a BLSTM layer only. Compared with vanilla BLSTM, BLSTM-CRF achieves higher precisions and recalls in all subtasks by significantly reducing the invalid labelling sequences (e.g., \texttt{I-arg} appears right after \texttt{O}). During prediction, instead of tagging each token independently, BLSTM-CRF takes into account the constraints between neighbouring labels, and potentially increases the co-occurrences of key arguments regarding the same event type. % in some way. 
 
 \paragraph{The ILP Post Inference:} 
-As shown in Table~\ref{tab:1}, ILP-based post inference considerably improves the overall system performance, especially in \textit{event type classification}. With the help of constraint \textbf{C4},  dubious key arguments can be correctly inferred through other key arguments from their context. Compared with BLSTM-CRF, BLSTM-CRF-ILP$_1$ produces an F1 gain of 7.4\% in event type classification, 1.8\% in event detection, and 4.6\% in argument detection. %, with respect to tF1. 
+As shown in Table~\ref{tab:1}, ILP-based post inference considerably improves the overall system performance, especially in \textit{event type classification}. With the help of constraint \textbf{C4},  dubious key arguments can be correctly inferred through other key arguments from their context. Compared with BLSTM-CRF, BLSTM-CRF-ILP$_1$ produces an F1 gain of 3.2\% in event classification, 1.5\% in key argument detection, and 1.2\% in all argument detection. %, with respect to tF1. 
 
 \paragraph{Multi-type Events:}
 %We further investigate the effect of 
 Among all methods, BLSTM-CRF-ILP$_{multi}$ is the only model that can deal with multi-type event mentions. %As shown in Table~\ref{tab:1}, 
 The proposed strategy in BLSTM-CRF-ILP$_{multi}$ helps detect more event mentions for a sentence, contributing to the increase of recalls, and F1 scores with a little drop of precisions. 
-%\textbf{Evaluated on \textbf{38XXXX} sentences containing multi-type event mentions, the F1 scores of BLSTM-CRF-ILP$_{multi}$ in event type classification, event detection and argument detection are 70.7\%, 58.4\% and 26.9\%, respectively.} 
-BLSTM-CRF-ILP$_{multi}$ can correctly identify \textbf{XXXX} sentences with multi-type events, 
-with an accuracy of \textbf{XXXX\%}, and for each involved event, our model maintains a high 
-performance in identifying its corresponding arguments, achieving the F1 scores of 70.7\%, 58.4\% 
-and 26.9\% for   event type classification, event detection and argument detection, respectively. 
+%\textbf{Evaluated on \textbf{38XXXX} sentences containing multi-type event mentions, the F1 scores of BLSTM-CRF-ILP$_{multi}$ in event type classification, event detection and argument detection are 70.7\%, 58.4\% and 26.9\%, respectively.}
+BLSTM-CRF-ILP$_{multi}$ can correctly identify 132 sentences with multi-type events, 
+with an accuracy of 95.6\%, and for each involved event, our model maintains a high 
+performance in identifying its corresponding arguments, achieving the F1 scores of 45.5\%, and 29.1\% for key argument detection and all argument detection, respectively. 
 
 \subsection{Manual Evaluation}\label{manualeve}
 To provide a deep investigation about our dataset and models, we randomly sample 150 sentences 
@@ -181,15 +178,16 @@ we find that BLSTM-CRF-ILP$_{multi}$ manages to detect 6 of them as negative.
 \small
 \centering
 \begin{tabular}{|l|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|p{0.8cm}<{\centering}|} \hline
-	Model & EC & AD & ED \\ \hline
-	CRF & 21.2 & 13.3 & 5.30 \\ \hline
-	MaxEnt & 17.7 & 11.7 & 5.44 \\ \hline
-	BLSTM & 79.8 & 64.3 & 41.2 \\ \hline \hline
-	BLSTM-CRF & 81.3 & 67.9 & 43.2 \\ \hline
-	BLSTM-CRF-ILP$_{1}$ & 85.0 & 70.4 & 43.8 \\ \hline
-	BLSTM-CRF-ILP$_{multi}$ & \textbf{85.3} & \textbf{70.8} & \textbf{44.3} \\ \hline
+	% Model & EC & AD & ED \\ \hline
+	% CRF & 21.2 & 13.3 & 5.30 \\ \hline
+	% MaxEnt & 17.7 & 11.7 & 5.44 \\ \hline
+	% BLSTM & 79.8 & 64.3 & 41.2 \\ \hline \hline
+	Model & EC & KAD & AAD \\ \hline
+	BLSTM-CRF & 75.4 & 54.7 & 35.5 \\ \hline
+	BLSTM-CRF-ILP$_{1}$ & 77.2 & 56.1 & 35.7 \\ \hline
+	BLSTM-CRF-ILP$_{multi}$ & \textbf{80.7} & \textbf{56.4} & \textbf{36.3} \\ \hline
 \end{tabular}
-\caption{The F1 scores of different systems on the manually annotated data. EC, AD, ED denote the event type classification, argument detection and event detection, respectively. \label{tab:2}}
+\caption{The F1 scores of different systems on the manually annotated data. EC, KAD, AAD denote the event type classification, key argument detection and all key argument detection, respectively. \label{tab:2}}
 \end{table}
 
 Table~\ref{tab:2} summarizes the performances of different models on the manually annotated dataset, where we can observe similar trends with Table~\ref{tab:1}, that 
@@ -230,10 +228,9 @@ This phenomenon suggests that by learning from distant supervision provided by F
 
 \paragraph{On BBC News:}
 % 在BBC新闻上抽取business.acquisition和tv.regular_tv_appearance两类事件，并用规则更新
-We further apply our event extractor, trained on the FBWiki,  to \textbf{XXXX} BBC News 
-articles (from \textbf{XXXX} to \textbf{XXXX} in Business and TV sections),  and manually examine
-the extraction results. We find that our model  is able to identify \textbf{XXXX}  events,  and  \textbf{XXXX}  events, 
-most of which are not covered in the currently used Freebase. 
+We further apply our event extractor, trained on the FBWiki, to 397 BBC News 
+articles (from 2017/04/18 to 2017/05/18 in Politics, Business and TV sections), and manually examine the extraction results. We find that our model is able to identify 117 events, and 53 events, 
+almost half of which are not covered in the currently used Freebase. 
 
 
 
@@ -245,7 +242,7 @@ we automatically build a new dataset, TBWiki, with the supervision provided by W
 \small
 \centering
 \begin{tabular}{|l|c|c|c|c|c|} \hline
-	Event type & Entr. & Sent. & EC & AD & ED \\ \hline
+	Event type & Entr. & Sent. & EC & KAD & AAD \\ \hline
 	Acquisition & 690 & 414 & 87.0 & 72.0 & 69.6 \\ \hline
 	Olympics & 2503 & 1460 & 77.2 & 64.5 & 38.6 \\ \hline
 	Awards & 3039 & 2217 & 95.0 & 82.8 & 58.6 \\ \hline
