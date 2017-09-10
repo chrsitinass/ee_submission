@@ -1,8 +1,6 @@
-\section{Event Detection and Argument Extraction}
-Once we have automatically labeled a large number of training instances, we can then use the training data to learn a model to detect the
-occurrence of events and the associated arguments from \emph{unseen} text. In this section, we present a novel neural network based model
- which does not rely on explicit trigger information (and hence it eliminates the need for manually labeling triggers to generate
- training data).
+\section{Event and Argument Detection}
+This section presents a novel neural network based model for event and argument detection. Our model does not rely on explicit trigger
+information. Hence it eliminates the need for manually labeling triggers to generate training data.
 
 %\subsection{Our Task}
 Previous event extraction systems mainly rely on explicit trigger identification to detect the occurrence of an event, which is then used
@@ -12,39 +10,36 @@ is required\FIXME{~\cite{}}. In our automatically collected dataset, where human
 two steps:
 
 \begin{description}
-	\item [Event detection]  To identify key arguments in a sentence. If a sentence contains \textbf{all key arguments} of a specific event type, it will be considered to imply an event mention of this specified type.
-	\item [Argument detection] To identify other non-key arguments for each event in the sentence.
+	\item [Event and key argument detection]  To identify key arguments in a sentence. If a sentence contains \textbf{all key arguments} of a specific event type, it will be considered to imply an event mention of this specified type.
+	\item [Non-key argument detection] To identify other non-key arguments for each event in the sentence.
 \end{description}
-%
-Take S1 as an example, in event detection, \emph{Remedy Corp}, \emph{BMC Software}, and \emph{2004} will be identified as
-\texttt{company\_acquired}, \texttt{acquiring\_company}, and \texttt{date}, respectively, indicating that S1 may mention a
-\texttt{business.acquisition} event. During argument detection, \emph{Service Management Business Unit} will be identified as
-\texttt{divisions\_formed}, which, together with the detected key arguments, form a full mention for a \texttt{business.acquisition} event.
 
-\subsection{Event Detection \label{evede}}
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/model.pdf}
+  \caption{Our event and argument detection pipeline.}\label{fig:model}
+\end{figure}
+
+Figure~\ref{fig:model} depicts our two-stage pipeline. \FIXME{Describe the pipeline, explain the input and output of each stage.}.
+
+\paragraph{Labeling Scheme}
+Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
+than word-level classifications. Each word in the given sentence is tagged using \texttt{BIO}) scheme (see Figure~\ref{fig:ls}).
+
+\subsection{Event and Key Argument Detection \label{evede}}
 %Before presenting our model,
 %Our event detector is an BLSTM-CRF model with ILP-based inference.
 %We first present our solution for multi-words arguments, and then introduce each component in our model.
 %BLSTM-CRF-ILP$_{multi}$ model, from bottom to top.
 
 %\paragraph{Tagging scheme}
-Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each subtask in a sequence labeling paradigm rather
-than word-level classifications. Each word in the given sentence is tagged using \texttt{BIO}) scheme.
 
-
-Figure~\ref{fig:model} provides an overview of our event detection model. The model has two key components, a Bidirectional LSTM (BLSTM)
-network with a conditional random field (CRF) layer and an Integer Linear Programming (ILP) based post inference. The input to our model is
-the raw text. The embedding layer maps the input text to a vector of real values, where each token of the text is given an integer value.
-The BLSTM and CRF layers find the optimal label sequence which will then be post-processed by an ILP solver. As an output, the labeling
-sequence tags each word with its role using the \BIO scheme (see Figure~\ref{fig:ls}).  Using the labeling sequence, an event detector can
-then simply map the sentence to a specific event type, using the detected key arguments and their properties. It is to note that our model
-may generate multiple labeling sequences for multi-typed events, one sequence for an event type.
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{figs/model.pdf}
-  \caption{Our event detection model.}\label{fig:model}
-\end{figure}
-
+Our model for event detection has two key components, a Bidirectional LSTM (BLSTM) network with a conditional random field (CRF) layer and
+an Integer Linear Programming (ILP) based post inference. The input to our model is the raw text. The BLSTM and CRF layers find the optimal
+labeling sequence which will then be post-processed by an ILP solver. It is to note that at this stage we do not concern non-key arguments
+and all non-key arguments token will be tagged as \texttt{O}.  Using the labeling sequence, an event detector can then simply map the
+sentence to a specific event type, using the detected key arguments and their properties. If multiple labeling sequences are generated, our
+model will map each sequence to an event type. This essentially implements a multi-typed event detection scheme.
 
 \paragraph{BLSTM}
 The Long Short-Term Memory (LSTM) network~\cite{hochreiter1997long} is a natural fit for sequence labeling, which maintains a memory based
@@ -115,11 +110,11 @@ We repeat the optimization procedure until the difference between the scores of 
 than a threshold $\lambda$, and consider all solutions $\{\bm{s}^1, \bm{s}^2, \ldots, \bm{s}^{T-1}\}$ as the optimal label sequences.
 We use Gurobi~\cite{gurobi} as our ILP solver and set $\lambda=0.05 \times n$, which averagely produce~1.07 optimal sequences for each sentence.
 
-\subsection{Argument Extraction}
+\subsection{Non-key Argument Extraction}
 After event detection, a sentence will be classified into a or more than one event types, and labeled with its corresponding key arguments.
 %The next step is argument detection, which
 Next, we will identify the remaining non-key arguments in the sentence.
 
 We adopt the same BLSTM-CRF architecture (that is used for event detection) for argument detection, where we encode the event label (output
 of event detection) of each word into a key-argument feature vector through a look-up table, and concatenate it with the original word
-embedding as the input to the new BLSTM-CRF. Note that we do not need post inference here.
+embedding as the input to the new BLSTM-CRF. Note that we do not need post inference here, \FIXME{because...}.

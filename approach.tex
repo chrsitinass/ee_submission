@@ -107,7 +107,24 @@ entry, but with a distance of 3 (i.e., far from each other under our criterion) 
 negative.
 
 \subsection{Data Generation}
-\begin{figure}
+To generate training data, we follow a number of steps. Our approach takes in existing structured tables or lists that are organized in a
+way similar to the \FB \CVT tables. The structured tables can be obtained from an existing knowledge base, created by experts, or generated
+through a combination of both approaches. For each event type, we determine the key arguments for each entry within that type used the key
+argument selection strategy described above. This step produces a set of rules to be used for data labeling, where each rule contains the
+event type, key arguments and non-key-arguments given by a structured table entry.
+
+Next, we label each individual sentence from the target dataset. The labeling process  is straightforward. We enumerate all rules from the
+generate rule set, and check if the target sentence contains all the key arguments specified by a rule. We regard a sentence as a
+\emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For example, S1 in Figure~\ref
+{fig:example} (a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
+
+Finally, we tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO}) scheme\FIXME{\cite{}}, where each token is
+labeled as \texttt{B-role} if it is the beginning of an event argument with its corresponding role \texttt{role}, or \texttt{I-role} if it
+is inside an argument, or \texttt{O} otherwise. We call this a labelling sequence. For instance, Figure~\ref{fig:ls} illustrates the
+labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we record the raw text of each training sentence,
+plus its labeling sequence, and key and non-key arguments.
+
+\begin{figure}[t!]
 \centering
 \scriptsize
 \begin{tabular}{ccccccc}
@@ -125,24 +142,7 @@ Business & Unit & in & 2004 &.\\
 
 \caption{The labeling sequence for sentence S1 shown in Figure~\ref{fig:example} (a). Each token of the sentence is tagged using the \BIO
 scheme. \label{fig:ls}}
-
 \end{figure}
-To generate training data, we follow a number of steps. Our approach takes in existing structured tables or lists that are organized in a
-way similar to the \FB \CVT tables. The structured tables can be obtained from an existing knowledge base, created by experts, or generated
-through a combination of both approaches. For each event type, we determine the key arguments for each entry within that type used the key
-argument selection strategy described above. This step produces a set of rules to be used for data labeling, where each rule contains the
-event type, key arguments and non-key-arguments given by a structured table entry.
-
-Next, we label each individual sentence from the target dataset. The labeling process  is straightforward. We enumerate all rules from the
-generate rule set, and check if the target sentence contains all the key arguments specified by a rule. We regard a sentence as a
-\emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For example, S1 in Figure~\ref
-{fig:example} (a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
-
-Finally, we tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO}) scheme\FIXME{\cite{}}, where each token is
-labeled as \texttt{B-role} if it is the beginning of an event argument with its corresponding role \texttt{role}, or \texttt{I-role} if it
-is inside an argument, or \texttt{O} otherwise. We call this a labelling sequence. For instance, Figure~\ref{fig:ls} illustrates the
-labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we record the raw text of each training sentence,
-plus its labeling sequence, and key and non-key arguments.
 
 \subsection{Limitations}
 Our approach relies on structured tables or lists to automatically label text. The table can be obtained from an existing knowledge base or
