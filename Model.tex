@@ -29,44 +29,20 @@ Take S1 as an example, in event detection, \emph{Remedy Corp}, \emph{BMC Softwar
 
 %\paragraph{Tagging scheme}
 Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each subtask in a sequence labeling paradigm rather
-than word-level classifications. Each word in the given sentence is tagged using the standard begin-inside-outside (\texttt{BIO})
-scheme\FIXME{\cite{}}, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its corresponding
-role \texttt{role}, or \texttt{I-role} if it is inside an argument, or \texttt{O} otherwise.
+than word-level classifications. Each word in the given sentence is tagged using \texttt{BIO}) scheme.
 
 
 Figure~\ref{fig:model} provides an overview of our event detection model. The model has two key components, a Bidirectional LSTM (BLSTM)
 network with a conditional random field (CRF) layer and an Integer Linear Programming (ILP) based post inference. The input to our model is
 the raw text. The embedding layer maps the input text to a vector of real values, where each token of the text is given an integer value.
 The BLSTM and CRF layers find the optimal label sequence which will then be post-processed by an ILP solver. As an output, the labeling
-sequence tags each word with its role using the \BIO scheme. Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in
-Figure~\ref{fig:example} (a).  Using the labeling sequence, an event detector can then simply map the sentence to a specific event type,
-using the detected key arguments and their properties. It is to note that our model may generate multiple labeling sequences for
-multi-typed events, one sequence for an event type.
+sequence tags each word with its role using the \BIO scheme (see Figure~\ref{fig:ls}).  Using the labeling sequence, an event detector can
+then simply map the sentence to a specific event type, using the detected key arguments and their properties. It is to note that our model
+may generate multiple labeling sequences for multi-typed events, one sequence for an event type.
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{figs/model.pdf}
   \caption{Our event detection model.}\label{fig:model}
-\end{figure}
-
-\begin{figure}
-\centering
-\scriptsize
-\begin{tabular}{lllllll}
-\toprule
-Remedy & Corp & was & sold & to & BMC & \\
-\rowcolor{Gray} \texttt{B-com.\_acq.} & \texttt{I-comp.\_acq.} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{B-acq.\_comp.} &\\
-\end{tabular}
-\begin{tabular}{lllllll}
-Software & as & the & Service & Management & Business & Unit\\
-\rowcolor{Gray} \texttt{I-acq.\_comp.} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{O}\\
-in & 2004 &.&&&&\\
-\rowcolor{Gray} \texttt{O} & \texttt{B-date} &&&&&\\
-\bottomrule
-\end{tabular}
-
-\caption{The labeling sequence for sentence S1 shown in Figure~\ref{fig:example} (a). Each token of the sentence is tagged using the \BIO
-scheme. \label{fig:ls}}
-
 \end{figure}
 
 
