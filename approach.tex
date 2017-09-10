@@ -41,7 +41,8 @@ Our strategy for selecting key arguments of a given event type is described as f
     (such as date) in the key argument set.
 
 \item [P3] We also remove sentences from the generated dataset in which the dependency distances between any two key arguments are
-    greater than 2.
+    greater than 2. The distance is the minimal number of hops it takes from one argument to the other on the directed dependency tree
+    (see also Figure~\ref{fig:2}).
 
 \end{description}
 
@@ -89,16 +90,16 @@ above. The three sentences are:
 
 
 Although time-related arguments are often missing in the currently imperfect \KBs, they are crucial to identify the actual occurrence of an
-event. As an example, suppose we want to use the \CVT entry shown in Table~\ref{tbl:bs} to determine if sentence S3 is a
-\texttt{business.acquistion} event. This sentence contains \emph{Microsoft} as \texttt{acquiring\_company} and \emph{aQuantive} as
-\texttt{company\_acquired}. If we ignore the time-related argument (i.e., date in this case), this setence could be mistakenly considered
-as a positive sample for event \texttt{business.acquisition}. Therefore, we always consider time-related arguments as key arguments (step
-P2) if these are given on the \CVT entry.
+event. As an example, suppose we want to use the \CVT entry shown in Table~\ref{tbl:bs} to determine if sentences S2 and S3 are a
+\texttt{business.acquistion} event. While this strategy works for S2, it gives a false prediction for S3. If we add the time-related
+argument (i.e., date in this case), we can then correctly label both sentences. We have conducted some inital experiments on our training
+data during the design phase, and found time-related arguments to be useful. Therefore, we always consider time-related arguments as key
+arguments (step P2) they are available.
 
 Finally, step P3 is based on our intuitions that two arguments involved in the same event mention are likely to be closer within the
 syntactic structure. As an example, consider S4. The dependency parse tree of this sentence is given in Figure~\ref{fig:2}. As can be seen
 from the diagram, although both \emph{Prince Philip} and \emph{marriage} can be matched as key arguments in a  \texttt{people.marriage}
-entry, but with a distance of 3 (i.e., far from each other under our criterion) on the dependency parse tree, thus S4 will be labelled as
+entry, but with a distance of 3 (i.e., far from each other under our criterion) on the dependency parse tree, thus S4 will be labeled as
 negative.
 
 \subsection{Data Generation}
