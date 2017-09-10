@@ -110,7 +110,7 @@ We repeat the optimization procedure until the difference between the scores of 
 than a threshold $\lambda$, and consider all solutions $\{\bm{s}^1, \bm{s}^2, \ldots, \bm{s}^{T-1}\}$ as the optimal label sequences.
 We use Gurobi~\cite{gurobi} as our ILP solver and set $\lambda=0.05 \times n$, which averagely produce~1.07 optimal sequences for each sentence.
 
-\subsection{Non-key Argument Extraction}
+\subsection{Non-key Argument Detection}
 After event detection, a sentence will be classified into a or more than one event types, and labeled with its corresponding key arguments.
 %The next step is argument detection, which
 Next, we will identify the remaining non-key arguments in the sentence.
