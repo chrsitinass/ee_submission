@@ -144,12 +144,13 @@ scheme. \label{fig:ls}}
 \subsection{Limitations}
 Our approach relies on structured tables or lists to automatically label text. The table can be obtained from an existing knowledge base or
 hand-crafted by developers. We stress that providing a table incurs much less overhead than manually tagging each training sentence, as a
-single table entry can be automatically applied to an unbounded number of sentences.  Moreover, like all supervision-based event
-extractors, our approach does not support detecting event types that are not seen in the training data. However, our approach does offer an
-easy way to extend the structured table to support new types, i.e., by adding new entries to the table.
+single table entry can be automatically applied to an unbounded number of sentences.
+
+Like all supervision-based event extractors, our approach does not support detecting event types that are not seen in the training data.
+However, our approach does offer an easy way to extend the structured table to support new types, i.e., by adding new entries to the table.
 
 
 Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} that can be used to find out
 which word a pronoun refers to. These works are therefore complementary to our approach. Integrating our work with co-reference methods is
-our future work. Furthermore, our approach targets at sentence-level event detection. There are methods like \FIXME{\cite{}} can be used to
-extend our approach to document-level event extraction.
+our future work. While our current implementation targets at sentence-level event detection, there are methods like \FIXME{\cite{}} can be
+used to extend our approach to document-level event extraction.
