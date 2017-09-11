@@ -40,7 +40,6 @@ We can also see that the dependency constraint (DIS) improves the data quality (
 Compared with \emph{T2}, the significant quality improvement by \emph{T4} proves that time-related arguments within CVT schemas are critical to imply an event occurrence. Among all strategies, the dataset by \emph{T5} achieves the best quality, while still accounting for 46735 sentences with 50109 events, almost 8 times more than the ACE dataset, showing that it is feasible to automatically collect quality training data for event extraction without either human-designed event schemas or \textbf{extra} human annotations.
 % our hypothesis \emph{H3} and \emph{H4} are feasible and it is an effective way to generate reliable data automatically.
 
-
 Our final dataset, \textbf{FBWiki}, using \emph{T5}, contains 46,735 positive sentences and 79,536 negative ones\footnote{To train a better
 system, besides trivial negative samples that have no arguments, we then randomly sample 34,837 negative instances that contain serveral
 but not all key arguments, and 21,866 sentences whose key arguments violate the dependency constraint.}
@@ -48,6 +47,7 @@ but not all key arguments, and 21,866 sentences whose key arguments violate the 
 training and 25,252 for testing. Note that there are averagely 4.8 arguments per event, and in total, 5.5\% instances labeled with more
 than two types of events.
 %Statistics for the generated dataset from Freebase is shown in Table~\ref{statistics}.
+
 %\begin{table}
 %\small
 %\centering
@@ -67,19 +67,35 @@ than two types of events.
 %%%% containing 7,180 sentences, containing 7,394 events and 25,840 arguments. We then randomly select 4,800 sentences for training and 1,180 sentences as test set, and the rest 1,200 sentences for validation.
 %We first manually evaluate the quality of our test set and then regard the automatically generated data as gold standard and evaluate our model accordingly. Next, we manually evaluate a subset of events detected by our model and analyze the differences with regards to the automatic evaluation. Finally, we conduct evaluation on a smaller dataset constructed according to Wikipedia tables and articles.
 
+\paragraph{Trigger Inference:} To further explore the relations between key arguments and triggers, we regard the least common ancestor of all key arguments in the dependency parse tree as a trigger candidate. As listed in Table~\ref{freqTriggers}, these trigger candidates share similar lexical meanings and are highly informative to infer their corresponding event types. Though missing explicit information from \KB, most triggers can be inferred from the dependencies between a group of key arguments and its context.
 
-\paragraph{On ACE}: We also test our strategy on the ACE dataset.
+\begin{table}
+	\small
+	\centering
+	\begin{tabular}{|l|l|l|} \hline
+		Event types & Trigger candidates & Prop. \\ \hline
+		film\_performance & play, appear, star, cast, portray & 0.72 \\ \hline
+		award\_honor & win, receive, award, share, earn & 0.91 \\ \hline
+		education & graduate, receive, attend, obtain, study & 0.83 \\ \hline
+		acquisition & acquire, purchase, buy, merge, sell & 0.81 \\ \hline
+		employment\_tenure & be, join, become, serve, appoint & 0.79 \\ \hline
+	\end{tabular}
+	\caption{Top 5 most frequent trigger candidates and the proportion of their appearance over all postive instances of five event types.}
+	\label{freqTriggers}
+\end{table}
+
+\paragraph{On ACE:} We also test our strategy on the ACE dataset. 
 We first collect all annotated events, without triggers, as the knowledge base
 to compute the importance values for all arguments, and select the key arguments
 for each ACE event type accordingly.  We follow \textit{T5} to examine every sentence
 whether it can be selected as an annotated instance within the ACE event types.
-Eventually, we correctly find 3448 sentences as positive instances, covering
-64.7\% of the original ACE dataset.  We find that the main reason for the
-missing 35.3\% is that many arguments in the ACE dataset are pronouns,
+Eventually, we correctly obtain 3448 sentences as positive instances, covering 
+64.7\% of the original ACE dataset.  We find that the main reason for the 
+missing 35.3\% is that many arguments in the ACE dataset are pronouns, 
 where our strategy is currently unable to treat a pronoun as an key argument. However,
 if a high-precision coreference resolution tool is available to preprocess the document,
 our solution would be able to automatically label more instances as training data.
-\textbf{ANYTHING NOVEL that traditional ACE does not have??? multple types? multiple events?}
+% \textbf{ANYTHING NOVEL that traditional ACE does not have??? multple types? multiple events?}
 
  \subsection{Extraction Setup}\label{sec:evalevent}
 Next, we evaluate our event extractor on the collected datasets,
