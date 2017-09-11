@@ -29,7 +29,7 @@ from the loop of data labeling.
 
 This work develops a novel approach to automatically label training instances for event extraction. Our key insight was that while event
 triggers are useful, they do not always need to be explicitly captured. Structured knowledge bases (\KBs) such as Freebase already provide
-rich information of event arguments, organizing as structured tables, to enable us to automatically infer the event type. For example, given the sentence ``\textit{USAir  filed for Chapter 11 again in 2004}'', a \emph{bankruptcy} event does not always have to be identified through finding the \emph{bankrupt} trigger, as a \emph{bankrupt\_company} argument also implies such an event. 
+rich information of event arguments, organizing as structured tables, to enable us to automatically infer the event type. For example, given the sentence ``\textit{In 2002, WorldCom made its filing for Chapter 11 in New York.}'', a \emph{bankruptcy} event does not always have to be identified through finding the \emph{bankrupt} trigger, as several key arguments together also imply such an event. 
 % For example, an \emph{marriage} event does not always have to be identified through finding the \emph{married} trigger, as a \emph{spouse} argument also implies such an event. 
 % In this paper, we show that structured tables in some knowledge bases already imply the occurrence of certain events.
 
@@ -37,7 +37,7 @@ rich information of event arguments, organizing as structured tables, to enable 
 If we can find ways to exploit structured tables or lists, a single entry can then be used to label many instances without % the involvement of 
 human annotations. Such an approach is known as distant supervision (\DS). Recent
 studies~\cite{mintz2009distant,zeng2015distant} have demonstrated its effectiveness in various NLP tasks. The central idea of \DS is to use
-the knowledge extracted from a known \KB to \emph{distantly supervise} the process of training data generation. % using another dataset. 
+the knowledge extracted from a known \textit{KB} to \emph{distantly supervise} the process of training data generation. % using another dataset. 
 By employing \DS, our approach is able to produce a large number of high-quality training instances.
 
 Under this new \DS paradigm, we develop a novel event extractor architecture based on neural networks and linear integer programming. One

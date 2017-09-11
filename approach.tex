@@ -24,15 +24,14 @@ We use the following formula to calculate the importance score, $I_{cvt, arg}$, 
 \begin{equation}
 	I_{cvt, arg} = log \frac{count(cvt, arg)}{count(cvt) \times count(arg)}
 \end{equation}
-
-
+%
 where $count(cvt)$ is the number of instances of type $cvt$ within a \CVT table, $count(arg)$ is the number of times $arg$ appearing in all
 \CVT types within a \CVT table, and $count(cvt, arg)$ is the number of $cvt$ instances that contain $arg$ across all \CVT tables.
 \FIXME{explain how do you come up with this formula.}
 
 
 Our strategy for selecting key arguments of a given event type is described as follows:
-
+%
 \begin{description}
 
 \item [P1] For a \CVT table with $n$ arguments, we first calculate the important score of each argument. We then consider the top half
@@ -46,19 +45,20 @@ Our strategy for selecting key arguments of a given event type is described as f
     directed dependency tree (see also Figure~\ref{fig:2}).
 
 \end{description}
-
+%
 Using this strategy, the first three arguments of the \CVT entry are considered to be key arguments for event type
 \texttt{business.acquisition}.
 
 
-\subsection{Key Argument Selection Parameters}
-To determine how many arguments should be chosen (step P1 in our strategy), we have conducted a series of evaluations on the quantity and
-quality of the datasets using different policies. We found that choosing the top half arguments (sorted by their importance scores) gives
-the best accuracy for event labeling.
+\paragraph{Selection Creteria: }
+To determine how many arguments should be chosen in P1, we have conducted a series of evaluations on the quantity and
+quality of the datasets using different policies. We found that choosing the top half arguments % (sorted by their importance scores) 
+gives the best accuracy for event labeling.
 
-We use three example sentences from the Wiki text dataset to explain steps P2 and P3 in our key argument selection strategy described
-above. The three sentences are:
-
+We use the following three example sentences from Wikipedia% text dataset 
+to explain P2 and P3 %in our key argument selection strategy 
+described above. %The three sentences are:
+%
 \begin{quote}
 \textbf{S2}: \underline{\emph{Microsoft}} spent \$6.3 billion buying online display advertising company \underline{\emph{aQuantive}} in
 \underline{\emph{2007}}.
@@ -72,7 +72,7 @@ above. The three sentences are:
 
 \begin{table}
  \scriptsize
- \caption{\CVT entry of \texttt{business.acquisition} in \FB. \label{tbl:bs}}
+ \caption{A \CVT entry of \texttt{business.acquisition} in \FB. \label{tbl:bs}}
         \begin{tabular}{llllc}
         \toprule
         id & company\_acquired & acquiring\_company & date & divisions\_formed\\
@@ -86,21 +86,24 @@ above. The three sentences are:
 \begin{figure}
 \centering
 	\includegraphics[width=.48\textwidth]{figure2.png}
-	\caption{The dependency tree of S3, which partially matches a \CVT entry of \emph{people.marriage} from \FB. \label{fig:2}}
+	\caption{The dependency tree of S4, which partially matches a \CVT entry of \emph{people.marriage} in \FB. \label{fig:2}}
 \end{figure}
 
 
 Although time-related arguments are often missing in the currently imperfect \KBs, they are crucial to identify the actual occurrence of an
-event. As an example, suppose we want to use the \CVT entry shown in Table~\ref{tbl:bs} to determine if sentences S2 and S3 are a
-\texttt{business.acquistion} event. While this strategy works for S2, it gives a false prediction for S3. If we add the time-related
-argument (i.e., date in this case), we can then correctly label both sentences. We have conducted some inital experiments on our training
-data during the design phase, and found time-related arguments to be useful. Therefore, we always consider time-related arguments as key
-arguments (step P2) they are available.
+event. As an example, suppose we want to use the \CVT entry shown in Table~\ref{tbl:bs} to determine whether sentences S2 and S3 are 
+\texttt{business.acquistion} events. While this strategy works for S2, it gives a false prediction for S3. If we add the time-related
+argument (i.e., date: 2007), we can then correctly label both sentences. 
+%We have conducted pilot experiments on our training data during the design phase, and found time-related arguments to be useful. 
+Therefore, we always consider time-related arguments as key
+arguments (P2) when they are available.
 
-Finally, step P3 is based on our intuitions that two arguments involved in the same event mention are likely to be closer within the
-syntactic structure. As an example, consider S4. The dependency parse tree of this sentence is given in Figure~\ref{fig:2}. As can be seen
-from the diagram, although both \emph{Prince Philip} and \emph{marriage} can be matched as key arguments in a  \texttt{people.marriage}
-entry, but with a distance of 3 (i.e., far from each other under our criterion) on the dependency parse tree, thus S4 will be labeled as
+Finally, P3 is based on our intuitions that two arguments involved in the same event mention are likely to be closer within the
+syntactic structure. %As an example, consider 
+%Figure~\ref{fig:2} shows the dependency parse tree of S4, its  is given in .
+%For example,  %in the dependency parse tree of S4 in Figure~\ref{fig:2}, 
+As shown in  Figure~\ref{fig:2}, although both \emph{Prince Philip} and \emph{marriage} can be matched as key arguments in a  \texttt{people.marriage}
+entry, but with a distance of 3 (i.e., far from each other under our criterion) on the dependency tree, thus S4 will be labeled as
 negative.
 
 \subsection{Data Generation}
@@ -116,46 +119,50 @@ names but refer to the same entity (e.g. Microsoft and MS).
 
 Next, we label each individual sentence from the target dataset. The labeling process is straightforward. We enumerate all rules from the
 generate rule set, and check if the target sentence contains all the key arguments specified by a rule. We regard a sentence as a
-\emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For insances, S1 in Figure~\ref
+\emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For instances, S1 in Figure~\ref
 {fig:example} (a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
 
 Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
 than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
-scheme\FIXME{\cite{}}, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its corresponding
-role \texttt{role}, or \texttt{I-role} if it is inside an argument, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}. For
-instance, Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we
-record the raw text of each training sentence, plus its labeling sequence, and key/non-key arguments.
+scheme\FIXME{\cite{}}, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its %corresponding
+role \texttt{role}, or \texttt{I-role} if it is inside an argument, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}. 
+%For instance, Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we
+%record the raw text of each training sentence, plus its labeling sequence, and key/non-key arguments.
 
-\begin{figure}[t!]
-\centering
-\scriptsize
-\begin{tabular}{ccccccc}
-\toprule
-Remedy & Corp & was & sold & to & BMC & \\
-\rowcolor{Gray} \texttt{B-com.\_ac.} & \texttt{I-comp.\_ac.} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{B-ac.\_comp.} &\\
-\end{tabular}
-\begin{tabular}{ccccc}
-Software & as & the & Service &Management \\
-\rowcolor{Gray} \texttt{I-acq.\_comp.} & \texttt{O} & \texttt{O} & \texttt{B-div.\_fo.} & \texttt{I-div.\_fo.} \\
-Business & Unit & in & 2004 &.\\
-\rowcolor{Gray} \texttt{I-div.\_fo.} & \texttt{I-div.\_fo.} & \texttt{O} & \texttt{B-date} &\\
-\bottomrule
-\end{tabular}
-
-\caption{The labeling sequence for sentence S1 shown in Figure~\ref{fig:example} (a). Each token of the sentence is tagged using the \BIO
-scheme. \label{fig:ls}}
-\end{figure}
+%\begin{figure}[t!]
+%\centering
+%\scriptsize
+%\begin{tabular}{ccccccc}
+%\toprule
+%Remedy & Corp & was & sold & to & BMC & \\
+%\rowcolor{Gray} \texttt{B-com.\_ac.} & \texttt{I-comp.\_ac.} & \texttt{O} & \texttt{O} & \texttt{O} & \texttt{B-ac.\_comp.} &\\
+%\end{tabular}
+%\begin{tabular}{ccccc}
+%Software & as & the & Service &Management \\
+%\rowcolor{Gray} \texttt{I-acq.\_comp.} & \texttt{O} & \texttt{O} & \texttt{B-div.\_fo.} & \texttt{I-div.\_fo.} \\
+%Business & Unit & in & 2004 &.\\
+%\rowcolor{Gray} \texttt{I-div.\_fo.} & \texttt{I-div.\_fo.} & \texttt{O} & \texttt{B-date} &\\
+%\bottomrule
+%\end{tabular}
+%
+%\caption{The labeling sequence for sentence S1 shown in Figure~\ref{fig:example} (a). Each token of the sentence is tagged using the \BIO
+%scheme. \label{fig:ls}}
+%\end{figure}
 
 \subsection{Limitations}
-Our approach relies on structured tables or lists to automatically label text. The table can be obtained from an existing knowledge base or
+Our approach relies on structured tables or lists to automatically label text. The table can be obtained from an existing \KB or
 hand-crafted by developers. We stress that providing a table incurs much less overhead than manually tagging each training sentence, as a
 single table entry can be automatically applied to an unbounded number of sentences.
 
-Like all current event extractors, our approach does not support detecting event types that are not seen in the training data. However, our
-approach does offer an easy way to extend the structured table to support new types, i.e., by adding new entries to the table.
+%Like all current event extractors, our approach does not support detecting event types that are not seen in the training data. However, our
+%approach does offer an easy way to extend the structured table to support new types, i.e., by adding new entries to the table.
 
 
-Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} that can be used to find out
-which word a pronoun refers to. These works are therefore complementary to our approach. Integrating our work with co-reference methods is
-our future work. Finally, while this work targets sentence-level event detection, we believe it is general applicable. There are methods
+%Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} that can be used to find out
+%which word a pronoun refers to. These works are therefore complementary to our approach. Integrating our work with co-reference methods is
+Our implementation may benefit from pronoun resolution, % disambiguate pronouns. %There are co-reference methods\FIXME{~\cite{}} that can be used to find out which word a pronoun refers to. 
+%These works are therefore complementary to our approach. Integrating our work with co-reference methods is our future work. 
+which is complementary to our method, and may improve our recall. 
+%Finally, 
+While this work targets sentence-level event detection, we believe it is general applicable. There are methods
 like \FIXME{\cite{}} can be used to extend our approach to document-level event extraction.
