@@ -20,7 +20,7 @@ predefined event types, and the employment of annotators to manually label if an
 
 To determine an event type, existing approaches  all require \emph{explicitly} identifying the event trigger from the text to associate the
 text with an event. Because identifying event triggers is non-trivial~\FIXME{\cite{}}, human involvement is deemed necessary. However, this
-thus makes the quality and the number of the generated instances directly dependent on the skill and available time of the
+thus makes the quality and the number of the generated instances dependent on the skill and available time of the
 annotators~\cite{aguilar2014comparison,song2015light}. To scale up event extractor training, we therefore must take human annotators out
 from the loop of data labeling.
 
@@ -35,18 +35,18 @@ such an event. %In this paper, we show that structured tables in some knowledge 
 
 If we can find ways to exploit structured tables or lists, a single entry can then be used to label a large number instances without the
 involvement of human annotators. Such an approach is known as distant supervision (\DS). Recent
-studies~\cite{mintz2009distant,zeng2015distant} have demonstrated its effectiveness in various NLP tasks. The central idea of of \DS is to
-use the knowledge extracted from a known knowledge base to \emph{distantly supervise} the process of training data generation using another
+studies~\cite{mintz2009distant,zeng2015distant} have demonstrated its effectiveness in various NLP tasks. The central idea of \DS is to use
+the knowledge extracted from a known knowledge base to \emph{distantly supervise} the process of training data generation using another
 dataset. By employing \DS, our approach is able to produce a large number of high-quality training instances.
 
 Under this new \DS paradigm, we develop a novel event extractor architecture based on neural networks and linear integer programming. One
-of the key innovations of our approach is that the model does not rely on explicit trigger information. Instead, it uses a set of key
-arguments to characterize an event type. As a result, it eliminates the need to explicitly identify event triggers, a process that requires
-heavy human involvement.
+of the key innovations of our approach is that the model does not rely on explicit triggers. Instead, it uses a set of key arguments to
+characterize an event type. As a result, it eliminates the need to explicitly identify event triggers, a process that requires heavy human
+involvement.
 
 We evaluate our approach by  applying it to perform sentence-level event extraction. To generate training data, we use Freebase to
-automatically label texts from a subset of Wikipedia articles. We then learn an event extractor using the generated data and use the
-learned model to extract events from unseen Wikipedia articles.
+automatically label texts from a subset of Wikipedia articles. We then learn an event extractor using the generated data  to extract events
+from unseen texts.
 
 Using \FIXME{24} structured tables from Freebase, we are able to generate over 100 thousands training instances within two hours. This
 results in a training dataset that is 100x greater than the widely used ACE dataset -- which took \FIXME{xx man-months} to

@@ -1,8 +1,17 @@
 \section{Event Extraction}
 %This section presents a novel neural network based model for event and argument detection.
 
-Unlike prior works, our event detection model does not rely on explicit trigger information. Instead, we represent the event extraction as
-a pipeline of detecting key and non-key arguments:
+Unlike prior works, our approach does not rely on explicit trigger information. Instead, it uses key arguments to detect the occurrence of
+an event. Therefore, we represent problem as a 2-stage pipeline. This is depicted in Figure~\ref{fig:model}. The input to the pipeline is
+the raw text. The outputs are the labeling sequence(s) and event type(s) -- if any event is detected.
+
+The first stage of the pipeline identifies the key arguments in a sentence. If a sentence contains \emph{all key arguments} of a specific
+event type, it will be considered to imply an event mention of this specified type. This stage outputs a labeling sequence and the
+corresponding event type (if an event is detected). Since at this stage we do not concern non-key arguments, all non-key argument tokens
+are tagged as \texttt{O}. Furthermore, multiple labeling sequences may be produced by this stage, each corresponds to an event type. The
+second stage of the pipeline takes in the outputs of the first stage. It then detects all the non-key arguments of the sentence and tags
+the non-key argument tokens.
+
 
 %Hence it eliminates the need for manually labeling triggers to generate training data.
 %
@@ -13,49 +22,38 @@ a pipeline of detecting key and non-key arguments:
 %\textbf{key arguments} can play the same role as explicit event triggers. We thus treat the event extraction as a pipeline of the following
 %two steps:
 
-\begin{description}
-	\item [Event and key argument detection]  This task identifies key arguments in a sentence. If a sentence contains \textbf{all key arguments} of a specific event type, it will be considered to imply an event mention of this specified type.
-	\item [Non-key argument detection] This task identifies other non-key arguments for each event in the sentence.
-\end{description}
+%\begin{description}
+%	\item [Event and key argument detection]  This task identifies key arguments in a sentence. If a sentence contains \textbf{all key arguments} of a specific event type, it will be considered to imply an event mention of this specified type.
+%	\item [Non-key argument detection] This task identifies other non-key arguments for each event in the sentence.
+%\end{description}
 
 \begin{figure}[t!]
   \centering
   \includegraphics[width=0.5\textwidth]{figs/model.pdf}
-  \caption{Our event and argument detection pipeline.}\label{fig:model}
+  \caption{Our 2-stage event extraction pipeline.}\label{fig:model}
 \end{figure}
 
-Figure~\ref{fig:model} depicts our two-stage pipeline. \FIXME{Describe the pipeline, explain the input and output of each stage.}.
 
-\paragraph{Labeling Scheme}
-Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
-than word-level classifications. Each word in the given sentence is tagged using the \texttt{BIO} scheme (see Figure~\ref{fig:ls}).
 
-\subsection{Event and Key Argument Detection \label{evede}}
-%Before presenting our model,
-%Our event detector is an BLSTM-CRF model with ILP-based inference.
-%We first present our solution for multi-words arguments, and then introduce each component in our model.
-%BLSTM-CRF-ILP$_{multi}$ model, from bottom to top.
 
-%\paragraph{Tagging scheme}
-
-Our model for event detection has two key components, a Bidirectional LSTM (BLSTM) network with a conditional random field (CRF) layer and
-an Integer Linear Programming (ILP) based post inference. The input to our model is the raw text. The BLSTM-CRF layer finds the optimal
-labeling sequence which will then be post-processed by an ILP solver. It is to note that at this stage we do not concern non-key arguments
-and all non-key arguments tokens will be tagged as \texttt{O}.  Using the labeling sequence, an event detector then simply maps the
-sentence to a specific event type, checking if a sentence contains all the key arguments of that event type. If multiple labeling sequences
-are generated, our model will map each sequence to an event type. This essentially implements a multi-typed event detection scheme.
+\subsection{Stage 1: Key Argument and Event Detection \label{evede}}
+The model used in stage 1 consists of a Bidirectional Long Short-Term Memory (BLSTM) network with a conditional random field (CRF) layer
+and an Integer Linear Programming (ILP) based post inference. The BLSTM-CRF layer finds the optimal labeling sequence which will then be
+post-processed by an ILP solver. Using the labeling sequence, an event detector then checks if the sentence mentions a specific event.
 
 \paragraph{BLSTM}
-The Long Short-Term Memory (LSTM) network~\cite{hochreiter1997long} is a natural fit for sequence labeling, which maintains a memory based
-on historical contextual information. Formally, given a sentence $\bm{w} = \{w_1, w_2, \dots, w_n\}$ of length $n$, we use $\textbf{x}_t$
-to represent feature vector, e.g., word embeddings, corresponding to the $t$-th word $w_t$. At each time $t$, a forward LSTM layer takes
-$\textbf{x}_t$ as input and computes the output vector $\overrightarrow{\textbf{h}}_t$ of the past context, while a backward LSTM layer
-reads the same sentence in reverse and outputs $\overleftarrow{\textbf{h}}_t$ given the future context. We concatenate these two vectors to
-form the output vector of a BLSTM, which is fed into a softmax layer to estimate a probability distribution over all possible labels.
+%The LSTM network~\cite{hochreiter1997long} is a natural fit for sequence labeling.
+%, which maintains a memory based
+%on historical contextual information. Formally, given a sentence $\bm{w} = \{w_1, w_2, \dots, w_n\}$ of length $n$, we use $\textbf{x}_t$
+%to represent feature vector, e.g., word embeddings, corresponding to the $t$-th word $w_t$.
+At each time $t$, a forward LSTM layer takes $\textbf{x}_t$ as input and computes the output vector $\overrightarrow{\textbf{h}}_t$ of the
+past context, while a backward LSTM layer reads the same sentence in reverse and outputs $\overleftarrow{\textbf{h}}_t$ given the future
+context. We concatenate these two vectors to form the output vector of a BLSTM, which is fed into a softmax layer to estimate a probability
+distribution over all possible labels.
 
 \paragraph{CRF}
-A straightforward way to find the label sequence for given sentence is to choose the
-best label for each word individually according to the BLSTM output.
+A straightforward way to find the label sequence for a given sentence is to choose the best label for each word individually according to
+the BLSTM output.
 %with maximum probability by LSTM as the prediction for each word.
 However, this greedy strategy ignores the dependencies between labels, thus cannot guarantee the best sequence.  %this independent labeling strategy
 %is limited especially when there are strong dependencies and constraints between labels.
@@ -69,9 +67,9 @@ We consider $\textbf{P}$ to be a matrix of confidence scores output by BLSTM, an
 During test, given a sentence $\bm{w}$, we adopt the Viterbi algorithm~\cite{rabiner1989tutorial} to find the optimal label sequence with the maximum score among all possible label sequences.
 
 \paragraph{ILP-based Post Inference}
-Essentially, event detection is a structure prediction problem. However, the output sequences of BLSTM-CRF do not necessarily satisfy the
-structural constraints. For instance, regardless of how many key arguments are correctly identified by BLSTM-CRF, if there is one key
-argument missing, this detection should be considered as failed.
+The output sequences of BLSTM-CRF do not necessarily satisfy the structural constraints of event extraction. For instance, regardless of
+how many key arguments are correctly identified by BLSTM-CRF, if there is one key argument missing, this detection should be considered as
+failed.
 
 We thus propose to apply ILP to further globally optimize the BLSTM-CRF output  to produce the best label sequence. Formally, let
 $\mathcal{L}$ be the set of possible argument labels. For each word $w_i$ in the sentence $\bm{w}$ and a pair of labels $ \langle l, l'
@@ -104,6 +102,11 @@ where we consider the following four constraints:
 \end{equation}
 where $n$ is the length of the sentence.
 
+\paragraph{Event Detection}
+This step simply maps the input sentence to a specific event type, checking if it contains all the key arguments of that event type by
+examining the labeling sequence produced by the ILP post-inference layer.
+
+
 \paragraph{Multi-typed Events}
 There are scenarios where one event is associated with multiple types, but all current event extractors only map a sentence to one event.
 \FIXME{zw: we need an example here.} One of the advantages of our approach is that it can be easily extended to support multi-typed events.
@@ -114,7 +117,7 @@ We repeat the optimization procedure until the difference between the scores of 
 than a threshold $\lambda$, and consider all solutions $\{\bm{s}^1, \bm{s}^2, \ldots, \bm{s}^{T-1}\}$ as the optimal label sequences.
 We use Gurobi~\cite{gurobi} as our ILP solver and set $\lambda=0.05 \times n$, which averagely produce~1.07 optimal sequences for each sentence.
 
-\subsection{Non-key Argument Detection}
+\subsection{Stage 2: Non-key Argument Detection}
 After event detection, a sentence will be classified into a or more than one event types, and labeled with its corresponding key arguments.
 %The next step is argument detection, which
 Next, we will identify the remaining non-key arguments in the sentence.

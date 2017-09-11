@@ -11,12 +11,14 @@ Our first step for training data generation is to identify the key arguments fro
 argument that plays an important role in one event, which helps to distinguish with other events. If a sentence contains all key arguments
 of an entry in an event table (e.g. a \CVT table), it is likely to express the event expressed by the table entry. If a sentence is
 labelled as an event mention of a \CVT event, we also record the words or phrases that match the entry's properties as the involved
-arguments, with the roles specified by their corresponding property names. For instance, sentence S1 shown in Figure~\ref{fig:example} (a)
-is a mention of \texttt{business.acquisition} type, its involved arguments are ``Remedy Corp", ``BMC Software", and ``2004", and the roles
-of the three arguments are \texttt{company\_acquired}, \texttt{acquiring\_company} and \texttt{date} respectively.
+arguments, with the roles specified by their corresponding property names.
+
+%For instance, sentence S1 shown in Figure~\ref{fig:example} (a)
+%is a mention of \texttt{business.acquisition} type, its involved arguments are ``Remedy Corp", ``BMC Software", and ``2004", and the roles
+%of the three arguments are \texttt{company\_acquired}, \texttt{acquiring\_company} and \texttt{date} respectively.
 
 \subsection{Determining Key Arguments}
-We use the following formula to calculate the importance value, $I_{cvt, arg}$, of an argument \emph{arg} (e.g., date) to its event type
+We use the following formula to calculate the importance score, $I_{cvt, arg}$, of an argument \emph{arg} (e.g., date) to its event type
 \emph{cvt} (e.g., \texttt{business.acquisition}):
 
 \begin{equation}
@@ -33,9 +35,8 @@ Our strategy for selecting key arguments of a given event type is described as f
 
 \begin{description}
 
-\item [P1] For a \CVT table with $n$ arguments, we first calculate the important value of each argument. Next, we sort the arguments
-    according to their importance values in descending order, so that arguments with the highest importance values will appear on the top
-    of the list. We then consider the top half $\ceil[\big]{n/2}$ (rounding up) arguments on the sorted list as key arguments.
+\item [P1] For a \CVT table with $n$ arguments, we first calculate the important score of each argument. We then consider the top half
+    $\ceil[\big]{n/2}$ (rounding up) arguments that have the highest importance scores as key arguments.
 
 \item [P2] We find that time-related arguments are useful in determining the event type, so we always include time-related arguments
     (such as date) in the key argument set.
@@ -103,24 +104,27 @@ entry, but with a distance of 3 (i.e., far from each other under our criterion) 
 negative.
 
 \subsection{Data Generation}
-To generate training data, we follow a number of steps. Our approach takes in existing structured tables or lists that are organized in a
-way similar to the \FB \CVT tables. The structured tables can be obtained from an existing knowledge base, created by experts, or generated
-through a combination of both approaches. For each event type, we determine the key arguments for each entry within that type used the key
-argument selection strategy described above. This step produces a set of rules to be used for data labeling, where each rule contains the
-event type, key arguments and non-key-arguments given by a structured table entry. In addition to use the raw information given by a \CVT
-entry, we also use alias information (such as Wikipedia redirect) to match two arguments that have different literal names but refer to the
-same entity (e.g. Microsoft and MS).
+To generate training data, we follow a number of steps.
 
-Next, we label each individual sentence from the target dataset. The labeling process  is straightforward. We enumerate all rules from the
+
+Our approach takes in existing structured tables or lists that are organized in a way similar to the \FB \CVT tables. The structured tables
+can be obtained from an existing knowledge base, created by experts, or generated through a combination of both approaches. For each event
+type, we determine the key arguments for each entry within that type used the key argument selection strategy described above. This step
+produces a set of rules to be used for data labeling, where each rule contains the event type, key arguments and non-key-arguments given by
+a structured table entry. We also use alias information (such as Wikipedia redirect) to match two arguments that have different literal
+names but refer to the same entity (e.g. Microsoft and MS).
+
+Next, we label each individual sentence from the target dataset. The labeling process is straightforward. We enumerate all rules from the
 generate rule set, and check if the target sentence contains all the key arguments specified by a rule. We regard a sentence as a
-\emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For example, S1 in Figure~\ref
+\emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For insances, S1 in Figure~\ref
 {fig:example} (a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
 
-Finally, we tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO}) scheme\FIXME{\cite{}}, where each token is
-labeled as \texttt{B-role} if it is the beginning of an event argument with its corresponding role \texttt{role}, or \texttt{I-role} if it
-is inside an argument, or \texttt{O} otherwise. We call this a labelling sequence. For instance, Figure~\ref{fig:ls} illustrates the
-labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we record the raw text of each training sentence,
-plus its labeling sequence, and key and non-key arguments.
+Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
+than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
+scheme\FIXME{\cite{}}, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its corresponding
+role \texttt{role}, or \texttt{I-role} if it is inside an argument, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}. For
+instance, Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we
+record the raw text of each training sentence, plus its labeling sequence, and key/non-key arguments.
 
 \begin{figure}[t!]
 \centering
@@ -147,11 +151,11 @@ Our approach relies on structured tables or lists to automatically label text. T
 hand-crafted by developers. We stress that providing a table incurs much less overhead than manually tagging each training sentence, as a
 single table entry can be automatically applied to an unbounded number of sentences.
 
-Like all supervision-based event extractors, our approach does not support detecting event types that are not seen in the training data.
-However, our approach does offer an easy way to extend the structured table to support new types, i.e., by adding new entries to the table.
+Like all current event extractors, our approach does not support detecting event types that are not seen in the training data. However, our
+approach does offer an easy way to extend the structured table to support new types, i.e., by adding new entries to the table.
 
 
 Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} that can be used to find out
 which word a pronoun refers to. These works are therefore complementary to our approach. Integrating our work with co-reference methods is
-our future work. Finally, while this work targets sentence-level event detection, there are methods like \FIXME{\cite{}} can be used to
-extend our approach to document-level event extraction.
+our future work. Finally, while this work targets sentence-level event detection, we believe it is general applicable. There are methods
+like \FIXME{\cite{}} can be used to extend our approach to document-level event extraction.
