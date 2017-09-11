@@ -215,7 +215,7 @@ BLSTM-CRF-ILP$_{multi}$ remains the most effective model. %,  in event extractio
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=.48\textwidth]{figure3.png}
+	\includegraphics[width=.48\textwidth]{figure3(2).png}
 	\caption{Example outputs of BLSTM-CRF-ILP$_{multi}$.\label{fig:1}}
 \end{figure}
 
@@ -224,8 +224,8 @@ BLSTM-CRF-ILP$_{multi}$ remains the most effective model. %,  in event extractio
 %Moreover, %manual evaluation may help us to gain a deep insight about our data and models. We
 % we manually check the top 5 event types whose EC F1 scores by BLSTM-CRF-ILP$_{multi}$ differ greatly between automatic evaluation and manual evaluation, summarized in Table~\ref{tab:4}. We find that most of the performance differences are caused by data generation. Figure~\ref{fig:1} examples two types of errors in data construction. Several automatically labeled sentences do not imply any event while still matching all key properties of some CVT entries. For example, although the phrase \emph{the car} in S5 matches a film name, it does not indicate this film, and there is no explicit evidence indicating that an actor starred in this film. This is a bottleneck of our data generation strategy. During manual evaluation, we find 16 negative sentences which are mistakenly labeled as positive, and our model manages to rectify 6 of them.
 
-Remarkably, our BLSTM-CRF-ILP$_{multi}$ model can find more CVT instances that are currently not referenced in Freebase. Our model detects two events in S7, while the arguments of the second event do not match any existing CVT instances in Freebase, which do not receive any credit during automatic evaluation, but should be populated into Freebase. %leading to a missing event in data generation.
-This phenomenon suggests that by learning from distant supervision provided by Freebase, our model can be used to populate or update Freebase instances in return.
+Remarkably, our BLSTM-CRF-ILP$_{multi}$ model can find more CVT instances that are currently not referenced in Freebase. Our model detects two events in S7, while arguments of the second event (in red boxes) do not match any existing CVT instances in \FB, which do not receive any credit during automatic evaluation, but should be populated into \FB. %leading to a missing event in data generation.
+This phenomenon suggests that by learning from distant supervision provided by \FB, our model can be used to populate or update Freebase instances in return.
 
 %\begin{table}[h]
 %\small
