@@ -12,31 +12,33 @@ associated with an event. Current event extractor systems are typically built th
 datasets. This means that the performance of the learned model is bound by the quality and coverage of the training datasets.
 
 To generate training data for event extraction, existing approaches all require manually identifying -- if an event occurs and of what type
--- by examining the event trigger\footnote{In the event extraction task, a trigger is the word or phrase that most clearly expresses the
+-- by examining the event trigger\footnote{In event extraction, a trigger is the word or phrase that most clearly expresses the
 occurrence of an event. For example, \textit{ex} in \textit{ex-husband} may trigger a \emph{divorce} event.} and arguments from each
 individual training instance. This process requires the involvement of linguists to design annotation templates and rules for a set of
 predefined event types, and the employment of annotators to manually label if an individual instance belongs to a predefined event type.
 
 
-To determine an event type, existing approaches  all require \emph{explicitly} identifying the event trigger from the text to associate the
-text with an event. Because identifying event triggers is non-trivial~\FIXME{\cite{}}, human involvement is deemed necessary. However, this
-thus makes the quality and the number of the generated instances dependent on the skill and available time of the
+To determine an event type, existing approaches  all require \emph{explicitly} identifying event triggers from text and assign them with predefined types, %to associate the text with an event. 
+%Because identifying event triggers is non-trivial~\FIXME{\cite{}}, human involvement is deemed necessary. 
+which is admittedly non-trivial~\FIXME{\cite{}}, thus relies on human to annotate training data. 
+%However, 
+This makes the quality and the number of the generated instances dependent on the skill and available time of the
 annotators~\cite{aguilar2014comparison,song2015light}. To scale up event extractor training, we therefore must take human annotators out
 from the loop of data labeling.
 
 
 This work develops a novel approach to automatically label training instances for event extraction. Our key insight was that while event
 triggers are useful, they do not always need to be explicitly captured. Structured knowledge bases (\KBs) such as Freebase already provide
-rich information of arguments, organizing as structured tables, to enable us to automatically infer the event type. For example, given the sentence ``\textit{USAir  filed for Chapter 11 again in 2004}'', a \emph{bankruptcy} event does not always have to be identified through finding the \emph{bankrupt} trigger, as a \emph{bankrupt\_company} argument also implies such an event. 
+rich information of event arguments, organizing as structured tables, to enable us to automatically infer the event type. For example, given the sentence ``\textit{USAir  filed for Chapter 11 again in 2004}'', a \emph{bankruptcy} event does not always have to be identified through finding the \emph{bankrupt} trigger, as a \emph{bankrupt\_company} argument also implies such an event. 
 % For example, an \emph{marriage} event does not always have to be identified through finding the \emph{married} trigger, as a \emph{spouse} argument also implies such an event. 
 % In this paper, we show that structured tables in some knowledge bases already imply the occurrence of certain events.
 
 
-If we can find ways to exploit structured tables or lists, a single entry can then be used to label a large number instances without the
-involvement of human annotators. Such an approach is known as distant supervision (\DS). Recent
+If we can find ways to exploit structured tables or lists, a single entry can then be used to label many instances without % the involvement of 
+human annotations. Such an approach is known as distant supervision (\DS). Recent
 studies~\cite{mintz2009distant,zeng2015distant} have demonstrated its effectiveness in various NLP tasks. The central idea of \DS is to use
-the knowledge extracted from a known knowledge base to \emph{distantly supervise} the process of training data generation using another
-dataset. By employing \DS, our approach is able to produce a large number of high-quality training instances.
+the knowledge extracted from a known \textit{KB} to \emph{distantly supervise} the process of training data generation. % using another dataset. 
+By employing \DS, our approach is able to produce a large number of high-quality training instances.
 
 Under this new \DS paradigm, we develop a novel event extractor architecture based on neural networks and linear integer programming. One
 of the key innovations of our approach is that the model does not rely on explicit triggers. Instead, it uses a set of key arguments to
