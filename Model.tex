@@ -108,14 +108,20 @@ examining the labeling sequence produced by the ILP post-inference layer.
 
 
 \paragraph{Multi-typed Events}
-There are scenarios where one event is associated with multiple types, but all current event extractors only map a sentence to one event.
-\FIXME{zw: we need an example here.} One of the advantages of our approach is that it can be easily extended to support multi-typed events.
+There are scenarios where one sentence expresses multiple events which share some key arguments,
+% one event is associated with multiple types, 
+but most current event extractors only map a sentence to one event.
+For example, in S5, \emph{Obama} is the \texttt{office\_holder} of a \texttt{government\_position\_held} event and \texttt{nominee} of an \texttt{award\_nomination} event.
+\begin{quote}
+	\textbf{S5}: \underline{\emph{Obama}} was  inaugurated as \underline{\emph{president}} on \underline{\emph{January}}, \underline{\emph{2009}}, and was named the  \underline{\emph{ Nobel  Peace  Prize}}  laureate nine months later.
+\end{quote}
+One of the advantages of our approach is that it can be easily extended to support multi-typed events.
 To do so, we allow our ILP solver to output multiple optimal sequences. Specifically, after our model outputs the best sequence $\bm{s}^t$
 at time $t$, we remove the previously best solutions
  $\{\bm{s}^1, \ldots, \bm{s}^{t}\}$ from the solution space, and re-run our solver to obtain the next optimal sequences $\bm{s}^{t+1}$.
 We repeat the optimization procedure until the difference between the scores of $\bm{s}^1$ and $\bm{s}^T$ is greater
 than a threshold $\lambda$, and consider all solutions $\{\bm{s}^1, \bm{s}^2, \ldots, \bm{s}^{T-1}\}$ as the optimal label sequences.
-We use Gurobi~\cite{gurobi} as our ILP solver and set $\lambda=0.05 \times n$, which averagely produce~1.07 optimal sequences for each sentence.
+We use Gurobi~\cite{gurobi} as our ILP solver and set $\lambda=0.5 \times n$, which averagely produce~1.07 optimal sequences for each sentence.
 
 \subsection{Stage 2: Non-key Argument Detection}
 After event detection, a sentence will be classified into a or more than one event types, and labeled with its corresponding key arguments.
