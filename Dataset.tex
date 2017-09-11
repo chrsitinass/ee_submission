@@ -5,11 +5,11 @@
    \\
    \subfloat[][ Entry of \texttt{business.acquisition} in Freebase]{
         \scriptsize
-        \begin{tabular}{llllp{1.6cm}}
+        \begin{tabular}{llllp{1.8cm}}
         \toprule
-        id & company\_acquired & acquiring\_company & date & divisions\_formed\\
+        id &   company\_acquired &   acquiring\_company &   date &   divisions\_formed\\
         \midrule
-        m.07bh4j7 & Remedy Corp & BMC Software & 2004 & Service Management Business Unit\\
+         \tiny m.07bh4j7 &   Remedy Corp &  \tiny BMC Software & 2004 & \tiny Service Management Business Unit\\
         \bottomrule
         \end{tabular}
 
@@ -21,9 +21,9 @@
 
 %The task of event extraction is to (1) detect the occurrence of events with specific types and (2) extract arguments (i.e. typed
 %participants or attributes) that are associated with an event.
-As a motivation example, consider a sentence extracted from a Wikipedia article, shown in Figure~\ref{fig:example} (a). To detect the event
-type, traditional approaches require identifying the trigger, \emph{sold}, and associating it with an event type -- a business acquisition
-event in this case.
+As a motivation example, consider the sentence %extracted from a Wikipedia article, shown 
+in Figure~\ref{fig:example}(a). To detect the event, 
+traditional approaches require first identifying the trigger word, \emph{sold}, then assigning it with an type of \texttt{business.acquisition}.
 
 
 For this particular sentence, we argue that identifying the trigger is not necessary for determining the event type.
@@ -35,13 +35,13 @@ Corp}, \emph{BMC Software}, and \emph{2004}, respectively to their properties, \
 \texttt{business.acquisition} event.
 
 This example shows that \CVT information can be used to infer event type without explicit trigger information. If we can utilize such \CVT
-information, we can then label sentences without needing to explicitly identifying the trigger. As a result, we can free annotators from
+information, we can then label sentences without needing to explicitly identifying any triggers. As a result, we can free annotators from
 the labour-intensive manual process. In this work, we develop a simple, yet effective technique to automatically generate training data by
 exploiting the prior \CVT knowledge.
 
 A natural question to ask is that ``How useful are \CVT-like structured information?". Later in this paper, we show that structured
-knowledge bases, tables or lists that are used to sum up certain activities can be a useful source of supervision data generation for event
-extraction -- using 24 \CVTs, we managed to automatically generate 100 thousands instances from a subset of the Wikipedia articles.
+\KBs, tables or lists that are used to sum up certain activities can be useful sources of supervision to automatically collect event
+annotations. % -- using 24 \CVTs, we managed to automatically generate 100 thousands instances from a subset of the Wikipedia articles.
 
 %
 %This work develops a simple, yet effective technique to automatically generate training data by exploiting the prior \CVT knowledge from
