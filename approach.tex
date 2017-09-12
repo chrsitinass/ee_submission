@@ -1,15 +1,15 @@
 \section{Training Data Generation}
 Our approach exploits structural information like \FB \CVT tables to  automatically annotate event mentions\footnote{An event mention is a
-phrase or sentence within which an event is described, including its type and arguments.} in order to generate training data to learn an
+phrase or sentence within which an event is described, including its type and arguments.}, and generate training data to learn an
 event extractor. We use the arguments of a \CVT table entry to infer what event a sentence is likely to express. A \CVT table entry can
-have multiple arguments but not all of them are useful in determining the occurrence of an event. For instance, the
-\texttt{divisions\_formed} argument in Figure~\ref{fig:example} (b) is not as important as the other three arguments when determining if a
+have multiple arguments, but not all of them are useful in determining the occurrence of an event. For instance, the
+\texttt{divisions\_formed} argument in Figure~\ref{fig:example}(b) is not as important as the other three arguments when determining if a
 sentence expresses a \texttt{business.acquisition} event.
 
 
 Our first step for training data generation is to identify the key arguments from a \CVT table entry. A \textbf{key argument} is an
 argument that plays an important role in one event, which helps to distinguish with other events. If a sentence contains all key arguments
-of an entry in an event table (e.g. a \CVT table), it is likely to express the event expressed by the table entry. If a sentence is
+of an entry in an event table (e.g. a \CVT table), it is likely to express the event presented by the table entry. If a sentence is
 labelled as an event mention of a \CVT event, we also record the words or phrases that match the entry's properties as the involved
 arguments, with the roles specified by their corresponding property names.
 
@@ -34,15 +34,14 @@ Our strategy for selecting key arguments of a given event type is described as f
 %
 \begin{description}
 
-\item [P1] For a \CVT table with $n$ arguments, we first calculate the important score of each argument. We then consider the top half
+\item [P1] For a \CVT table with $n$ arguments, we first calculate the importance score of each argument. We then consider the top half
     $\ceil[\big]{n/2}$ (rounding up) arguments that have the highest importance scores as key arguments.
 
-\item [P2] We find that time-related arguments are useful in determining the event type, so we always include time-related arguments
+\item [P2] We find that time-related arguments are useful in determining the event type, so we always include a time-related argument\footnote{If there are multiple time-related arguments, we select the one with highest importance score.}
     (such as date) in the key argument set.
 
 \item [P3] We also remove sentences from the generated dataset in which the dependency distances between any two key arguments are
-    greater than 2. The distance between two arguments is the minimal number of hops it takes from one argument to the other on the
-    directed dependency tree (see also Figure~\ref{fig:2}).
+    greater than 2. The distance between two arguments is the minimal number of hops it takes from one argument to the other on the dependency parse tree (see also Figure~\ref{fig:2}).
 
 \end{description}
 %
@@ -95,7 +94,7 @@ event. As an example, suppose we want to use the \CVT entry shown in Table~\ref{
 \texttt{business.acquistion} events. While this strategy works for S2, it gives a false prediction for S3. If we add the time-related
 argument (i.e., date: 2007), we can then correctly label both sentences. 
 %We have conducted pilot experiments on our training data during the design phase, and found time-related arguments to be useful. 
-Therefore, we always consider time-related arguments as key
+Therefore, we always consider the most important time-related argument as key
 arguments (P2) when they are available.
 
 Finally, P3 is based on our intuitions that two arguments involved in the same event mention are likely to be closer within the
@@ -113,19 +112,19 @@ To generate training data, we follow a number of steps.
 Our approach takes in existing structured tables or lists that are organized in a way similar to the \FB \CVT tables. The structured tables
 can be obtained from an existing knowledge base, created by experts, or generated through a combination of both approaches. For each event
 type, we determine the key arguments for each entry within that type used the key argument selection strategy described above. This step
-produces a set of rules to be used for data labeling, where each rule contains the event type, key arguments and non-key-arguments given by
+produces a set of rules to be used for data labeling, where each rule contains the event type, key arguments and non-key arguments given by
 a structured table entry. We also use alias information (such as Wikipedia redirect) to match two arguments that have different literal
 names but refer to the same entity (e.g. Microsoft and MS).
 
 Next, we label each individual sentence from the target dataset. The labeling process is straightforward. We enumerate all rules from the
 generate rule set, and check if the target sentence contains all the key arguments specified by a rule. We regard a sentence as a
 \emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For instances, S1 in Figure~\ref
-{fig:example} (a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
+{fig:example}(a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
 
 Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
 than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
 scheme\FIXME{\cite{}}, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its %corresponding
-role \texttt{role}, or \texttt{I-role} if it is inside an argument, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}. 
+role \texttt{role}, or \texttt{I-role} if it is inside a \texttt{role}, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}. 
 %For instance, Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we
 %record the raw text of each training sentence, plus its labeling sequence, and key/non-key arguments.
 
