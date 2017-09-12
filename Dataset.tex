@@ -23,13 +23,13 @@
 %participants or attributes) that are associated with an event.
 As a motivation example, consider the sentence %extracted from a Wikipedia article, shown 
 in Figure~\ref{fig:example}(a). To detect the event, 
-traditional approaches require first identifying the trigger word, \emph{sold}, then assigning it with an type of \texttt{business.acquisition}.
+traditional approaches require first identifying the trigger word, \emph{sold}, then assigning it with a type of \texttt{business.acquisition}.
 
 
 For this particular sentence, we argue that identifying the trigger is not necessary for determining the event type.
 Figure~\ref{fig:example} (b) shows a Compound Value Type (\CVT) entry from Freebase (\FB)~\cite{bollacker2008freebase}. Here, a \CVT
 organizes complex structured data with multiple \emph{properties} in a table\footnote{Therefore, we also use the term ``argument" to refer
-to a \CVT property for the rest of the paper.}. Using this \CVT schema, one can easily map the three arguments of sentence S1, \emph{Remedy
+to a \CVT property for the rest of paper.}. Using this \CVT schema, one can easily map the three arguments of sentence S1, \emph{Remedy
 Corp}, \emph{BMC Software}, and \emph{2004}, respectively to their properties, \texttt{company\_acquired}, \texttt{acquiring\_company}, and
 \texttt{date}. Here each property essentially describes the role of an argument in the sentence; and in combination, they define a
 \texttt{business.acquisition} event.
