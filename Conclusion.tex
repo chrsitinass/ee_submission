@@ -1,5 +1,16 @@
-\section{Conclusions and Future Work}
-In this paper, we propose a novel event extraction paradigm without expert-designed event templates by leveraging structured knowledge bases or tables to automatically acquire event schema and corresponding training data. We propose a BLSTM-CRF model with ILP-based post inference to extract multi-typed event mentions without explicit trigger annotations. Experimental results on both manual and automatic evaluations show that it is possible to learn to identify both typed events and typed roles with indirect supervision from Freebase or Wikipedia tables. 
-In the future, we will first further investigate how to better characterize key arguments for a certain event type, and extend our work to update a structured knowledge base according to news events.
+\section{Conclusions}
+This paper has presented a novel approach for event extraction, offering a fast way to automatically construct training data, and allowing
+effective event extraction modeling.  To generate training data, our approach extracts, from existing structured knowledge bases, which of
+the arguments best describe an event; and it uses the key arguments to automatically infer the occurrence of an event without explicit
+trigger identification. We apply our approach to label Wikipedia articles using knowledge extracted from Freebase. We show that and the
+quality of the automatically generated training data is comparable to those that were manually labeled by human experts.  We demonstrate
+that this large volume of high-quality training data, in combination of our novel event extraction architecture,  not only lead to a highly
+effective event extractor, but also enable multi-typed event detection for the first time. 
 
-%Furthermore, our model can extract information not covered by Freebase which indicates the possibility to extend this work to knowledge base population.
+
+
+
+%In this paper, we propose a novel event extraction paradigm without expert-designed event templates by leveraging structured knowledge bases or tables to automatically acquire event schema and corresponding training data. We propose a BLSTM-CRF model with ILP-based post inference to extract multi-typed event mentions without explicit trigger annotations. Experimental results on both manual and automatic evaluations show that it is possible to learn to identify both typed events and typed roles with indirect supervision from Freebase or Wikipedia tables.
+%In the future, we will first further investigate how to better characterize key arguments for a certain event type, and extend our work to update a structured knowledge base according to news events.
+%
+%%Furthermore, our model can extract information not covered by Freebase which indicates the possibility to extend this work to knowledge base population.
