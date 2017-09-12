@@ -78,14 +78,18 @@ described above. %The three sentences are:
         m.05nb3y7 & aQuantive & Microsoft & 2007 & N/A\\
         \bottomrule
         \end{tabular}
-        \caption{A \CVT entry of \texttt{business.acquisition} in \FB. \label{tbl:bs}}
+        \vspace{-2mm}
+        \caption{A \texttt{business.acquisition} \CVT entry in \FB. \label{tbl:bs}}
+        \vspace{-2mm}
 \end{table}
 
 
 \begin{figure}
 \centering
 	\includegraphics[width=.48\textwidth]{figure2.png}
+    \vspace{-5mm}
 	\caption{The dependency tree of S4, which partially matches a \CVT entry of \emph{people.marriage} in \FB. \label{fig:2}}
+    \vspace{-2mm}
 \end{figure}
 
 
@@ -123,7 +127,7 @@ generate rule set, and check if the target sentence contains all the key argumen
 
 Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
 than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
-scheme\FIXME{\cite{}}, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its %corresponding
+scheme, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its %corresponding
 role \texttt{role}, or \texttt{I-role} if it is inside a \texttt{role}, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}.
 %For instance, Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we
 %record the raw text of each training sentence, plus its labeling sequence, and key/non-key arguments.
