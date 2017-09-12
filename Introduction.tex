@@ -53,13 +53,13 @@ innovations of our approach is that the model does not rely on explicit triggers
 an event type. As a result, it eliminates the need to explicitly identify event triggers, a process that requires heavy human involvement.
 
 We evaluate our approach by applying it to sentence-level event extraction. We have conducted intensive experiments on multiple datasets
-generated using various knowledge resources. Our experimental results confirm that key arguments alone can be used to precisely infer event
-types. Using the structured tables from FreeBase and Wikipedia, we are able to automatically generate a large number of training instances
--- resulting in a training dataset that is 14x greater than the widely used ACE data set  -- which is smaller, but took \FIXME{xx
-man-months} to construct.  We show that the quality of the automatically generated data is comparable to ones that were manually
-constructed by human experts. Using the larger volume of training data, in combination of our novel event extractor architecture, we not
-only learn a highly effective event extraction system, but also support multi-typed event detection -- a feature that none of the existing
-event extraction methods support, but is much needed.
+generated using various knowledge resources. Our experimental results confirm that key arguments are often sufficient enough for infering
+event types. Using the structured tables from FreeBase and Wikipedia, we are able to automatically generate a large number of training
+instances -- resulting in a training dataset that is 14x greater than the widely used ACE data set  -- which took \FIXME{xx man-months} to
+construct. We show that the quality of the automatically generated data is comparable to ones that would be manually constructed by human
+experts. Using the larger volume of training data, in combination of our novel event extractor architecture, we can not only learn a highly
+effective event extraction system, but also unlock the potential of multi-typed event detection -- a feature that none of the existing
+event extraction methods supports, but is much needed.
 
 % \textbf{Specifically, we leverage Freebase CVT and Wikipedia tables to automatically label texts from a subset of Wikipedia
 %articles.} By employing \DS, our approach is able to produce a large number of high-quality training instances, resulting in a training
