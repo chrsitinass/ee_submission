@@ -27,7 +27,7 @@ We use the following formula to calculate the importance score, $I_{cvt, arg}$, 
 %
 where $count(cvt)$ is the number of instances of type $cvt$ within a \CVT table, $count(arg)$ is the number of times $arg$ appearing in all
 \CVT types within a \CVT table, and $count(cvt, arg)$ is the number of $cvt$ instances that contain $arg$ across all \CVT tables.
-% \FIXME{explain how do you come up with this formula.}
+\FIXME{explain how do you come up with this formula.}
 
 
 Our strategy for selecting key arguments of a given event type is described as follows:
@@ -125,8 +125,8 @@ generate rule set, and check if the target sentence contains all the key argumen
 \emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For instances, S1 in Figure~\ref
 {fig:example}(a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
 
-Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
-than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
+Because 68\%  of  arguments in our dataset consist of more than one word, we formulate the training instance in a sequence labeling
+paradigm rather than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
 scheme, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its %corresponding
 role \texttt{role}, or \texttt{I-role} if it is inside a \texttt{role}, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}.
 %For instance, Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we
@@ -163,8 +163,9 @@ single table entry can be automatically applied to an unbounded number of senten
 
 %Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} that can be used to find out
 %which word a pronoun refers to. These works are therefore complementary to our approach. Integrating our work with co-reference methods is
-Our implementation may benefit from pronoun resolution and entity coreference, % disambiguate pronouns. %There are co-reference methods\FIXME{~\cite{}} that can be used to find out which word a pronoun refers to.
+Our implementation may benefit from pronoun resolution, % disambiguate pronouns. %There are co-reference methods\FIXME{~\cite{}} that can be used to find out which word a pronoun refers to.
 %These works are therefore complementary to our approach. Integrating our work with co-reference methods is our future work.
 which is complementary to our method, and may improve our recall.
 %Finally,
-While this work targets the sentence level, we believe it is generally applicable. There are methods like event coreference resolution\cite{liao2010using,berant2014modeling}, can be used to extend our approach to document-level event extraction.
+While this work targets the sentence level, we believe it is generally applicable. There are methods like \FIXME{\cite{}} can be used to
+extend our approach to document-level event extraction.
