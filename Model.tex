@@ -117,15 +117,19 @@ if the input sentence contains all the key arguments of a specific event type by
 examining the labeling sequence. % produced by the ILP post-inference layer.
 
 \vspace{-1.5mm}
-\paragraph{Multi-typed Events}
+\paragraph{Multiple Typed Events}
 There are scenarios where one sentence expresses multiple events which share some key arguments,
 % one event is associated with multiple types,
 but most current event extractors only map a sentence to one event.
-For example, in S5, \emph{Obama} is the \texttt{office\_holder} of a \texttt{government\_position\_held} event and \texttt{nominee} of an \texttt{award\_nomination} event.
+For example, in S5, \emph{Kevin Spacey} is the \texttt{actor} of a \texttt{film\_performance} event and a \texttt{tv\_appearance} event triggered by the same word \emph{stared}.
+% For example, in S5, \emph{Obama} is the \texttt{office\_holder} of a \texttt{government\_position\_held} event and \texttt{nominee} of an \texttt{award\_nomination} event.
+% \begin{quote}
+%	\textbf{S5}: \underline{\emph{Obama}} was  inaugurated as \underline{\emph{president}} on \underline{\emph{January}}, \underline{\emph{2009}}, and was named the  \underline{\emph{ Nobel  Peace  Prize}}  laureate nine months later.
+% \end{quote}
 \begin{quote}
-	\textbf{S5}: \underline{\emph{Obama}} was  inaugurated as \underline{\emph{president}} on \underline{\emph{January}}, \underline{\emph{2009}}, and was named the  \underline{\emph{ Nobel  Peace  Prize}}  laureate nine months later.
+	\textbf{S5}: \underline{\emph{Kevin Spacey}} stared as  \underline{\emph{Frank Underwood}} in  the  Netflix  series     \underline{\emph{House of Cards}}, and later as \underline{\emph{Tom Brand}} in \underline{\emph{Nine Lives}}.
 \end{quote}
-One of the advantages of our approach is that it can be easily extended to support multi-typed events.
+One of the advantages of our approach is that it can be easily extended to support multiple typed events.
 To do so, we allow our ILP solver to output multiple optimal sequences. Specifically, after our model outputs the best sequence $\bm{s}^t$
 at time $t$, we remove the previously best solutions
  $\{\bm{s}^1, \ldots, \bm{s}^{t}\}$ from the solution space, and re-run our solver to obtain the next optimal sequences $\bm{s}^{t+1}$.

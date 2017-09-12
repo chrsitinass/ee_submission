@@ -186,12 +186,12 @@ It is not surprising that  every model with a CRF layer over its BLSTM layer is 
 %\paragraph{The ILP Post Inference:}
 As shown in Table~\ref{tab:1}, the ILP-based post inference considerably improves the overall performance, especially in \textit{event type classification}. With the help of constraint \textbf{C4},  dubious key arguments can be correctly inferred through other key arguments from their context. Compared with BLSTM-CRF, BLSTM-CRF-ILP$_1$ produces an F1 gain of 3.2\% in event type classification, 1.5\% in key argument detection, and 1.2\% in all argument detection. %, with respect to tF1.
 
-\vspace{2mm}\noindent\textbf{\emph{Multi-type Events}:}
+\vspace{2mm}\noindent\textbf{\emph{Multiple Type Events}:}
 %We further investigate the effect of
-Among all methods, BLSTM-CRF-ILP$_{multi}$ is the only model that can deal with multi-type event mentions. %As shown in Table~\ref{tab:1},
+Among all methods, BLSTM-CRF-ILP$_{multi}$ is the only model that can deal with multiple type event mentions. %As shown in Table~\ref{tab:1},
 The proposed strategy ILP$_{multi}$ helps detect more event mentions for a sentence, contributing to the increase of recalls, and F1 scores with a little drop of precisions.
 %\textbf{Evaluated on \textbf{38XXXX} sentences containing multi-type event mentions, the F1 scores of BLSTM-CRF-ILP$_{multi}$ in event type classification, event detection and argument detection are 70.7\%, 58.4\% and 26.9\%, respectively.}
-BLSTM-CRF-ILP$_{multi}$ can correctly identify 132 sentences with multi-type events,
+BLSTM-CRF-ILP$_{multi}$ can correctly identify 132 sentences with multiple type events,
 with an accuracy of 95.6\%, and for each involved event, our model maintains a high
 performance in identifying its arguments, achieving 45.5\%, and 29.1\% in F1 for key argument detection and all argument detection, respectively.
 
