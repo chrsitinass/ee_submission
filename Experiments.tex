@@ -7,31 +7,35 @@ Our experiments are designed to answer the following questions,
 their corresponding arguments,
 and 3) whether our solution can work with other knowledge resources for more types of event.
 
- \subsection{Dataset Evaluation}\label{sec:evalhypo}
-Let us first evaluate \textbf{different data-collecting strategies discussed in Section XXXX}:
-(1) \emph{ALL}: all arguments are regarded as key arguments; (2) \emph{IMP}: we select the top half arguments with highest importance values as key arguments; (3) \emph{IMP\&TIME} means adding a time-related argument with the highest importance value to %the set of key arguments defined by
-\emph{IMP}; (4) \emph{DIS}: we eliminate sentences where the dependency distances between any two key arguments are greater than 2.
-We follow the above methods to collect datasets using Freebase and the English Wikipedia dump of 2016-11-20,
-randomly select 100 sentences from each dataset, and ask two annotators to decide whether each sentence implies a given type of event.
+ \subsection{Key Argument Selection Strategy}\label{sec:evalhypo}
+We start by comparing the effectiveness of four key argument selection strategies. They are: (1) \emph{ALL} uses all arguments; (2)
+\emph{IMP} uses the top half arguments with highest importance scores as key arguments; (3) \emph{IMP\&TIME} includes a time-related
+argument together with  the arguments selected by \emph{IMP}; and (4) \emph{DIS} eliminates sentences where the dependency distances
+between any two key arguments are greater than 2.
+
+We follow the above methods to collect datasets using Freebase and the English Wikipedia dump of 2016-11-20, randomly select 100 sentences
+from each dataset, and ask two human annotators to decide whether each sentence implies a given type of event.
 
 
 
 %To investigate the possibility of automatically constructing training data for event extraction,
 
-\begin{table}[h]
+\begin{table}[t!]
 \small
 \centering
-\begin{tabular}{|c|l|c|c|c|} \hline
-	No. & Strategy & Sent. & Type & Post. \\ \hline
-	T1 & \emph{ALL} & 203 & 9 & 98\% \\ \hline
-	T2 & \emph{IMP} & 318K & 24 & 22\% \\ \hline
-	T3 & \emph{IMP}+\emph{DIS} & 170K & 24 & 37\% \\ \hline
-	T4 & \emph{IMP\&TIME} & 112K & 24 & 83\% \\ \hline
-	T5 & \emph{IMP\&TIME}+\emph{DIS} & 46K & 24 & 91\% \\ \hline
+\begin{tabular}{clccc}
+    \toprule
+	No. & Strategy & Sent. & Type & Post. \\
+    \midrule
+	T1 & \emph{ALL} & 203 & 9 & 98\% \\
+	T2 & \emph{IMP} & 318K & 24 & 22\% \\
+	T3 & \emph{IMP}+\emph{DIS} & 170K & 24 & 37\%   \\
+	T4 & \emph{IMP\&TIME} & 112K & 24 & 83\% \\
+	T5 & \emph{IMP\&TIME}+\emph{DIS} & 46K & 24 & 91\% \\
+    \bottomrule
 \end{tabular}
 \caption{Statistics of the datasets built with different strategies.
-% \textit{Instances} denotes the number of CVT instances that can be used for each hypothesis.
-\textit{Sent.} is the number of sentences found. \textit{Type} the number of different CVT types found.  \textit{Post.} is the percentage of sentences mentioning the given events explicitly.\label{tab:3}}
+\textit{Sent.} is the number of sentences found. \textit{Type} the number of different \CVT types found.  \textit{Post.} is the percentage of sentences mentioning the given events explicitly.\label{tab:3}}
 \end{table}
 
 As shown in Table~\ref{tab:3}, it is not surprising that \emph{T1}, as the most strict, guarantees the quality of the collected data, but only contributes 203 sentences covering 9 event types, which is far from sufficient for further applications. \emph{T2} relaxes \emph{T1} by allowing the absence of non-key arguments, which expands the resulting dataset, but introduces more noise.
@@ -84,14 +88,14 @@ than two types of events.
 	\label{freqTriggers}
 \end{table}
 
-\paragraph{On ACE:} We also test our strategy on the ACE dataset. 
+\paragraph{On ACE:} We also test our strategy on the ACE dataset.
 We first collect all annotated events, without triggers, as the knowledge base
 to compute the importance values for all arguments, and select the key arguments
 for each ACE event type accordingly.  We follow \textit{T5} to examine every sentence
 whether it can be selected as an annotated instance within the ACE event types.
-Eventually, we correctly obtain 3448 sentences as positive instances, covering 
-64.7\% of the original ACE dataset.  We find that the main reason for the 
-missing 35.3\% is that many arguments in the ACE dataset are pronouns, 
+Eventually, we correctly obtain 3448 sentences as positive instances, covering
+64.7\% of the original ACE dataset.  We find that the main reason for the
+missing 35.3\% is that many arguments in the ACE dataset are pronouns,
 where our strategy is currently unable to treat a pronoun as an key argument. However,
 if a high-precision coreference resolution tool is available to preprocess the document,
 our solution would be able to automatically label more instances as training data.
