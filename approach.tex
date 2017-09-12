@@ -125,8 +125,8 @@ generate rule set, and check if the target sentence contains all the key argumen
 \emph{positive} sample if it contains all the key arguments of a rule, or \emph{negative} otherwise. For instances, S1 in Figure~\ref
 {fig:example}(a) and S2 (with its arguments in italics and underlined) are positive examples, while S3 and S4 are negative.
 
-Because 68\%  of  arguments in our dataset consist of more than one word, we formulate the training instance in a sequence labeling
-paradigm rather than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
+Because 68\%  of  arguments in our dataset consist of more than one word, we formulate the training in a sequence labeling paradigm rather
+than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
 scheme, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its %corresponding
 role \texttt{role}, or \texttt{I-role} if it is inside a \texttt{role}, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}.
 %For instance, Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we

@@ -43,7 +43,7 @@ The model used in stage 1 consists of a Bidirectional Long Short-Term Memory (BL
 and an Integer Linear Programming (ILP) based post inference. The BLSTM-CRF layer finds the optimal labeling sequence which will then be
 post-processed by an ILP solver. Using the labeling sequence, an event detector then checks if the sentence mentions a specific event.
 
-\vspace{-1mm}
+\vspace{-1.5mm}
 \paragraph{BLSTM}
 %The LSTM network~\cite{hochreiter1997long} is a natural fit for sequence labeling.
 %, which maintains a memory based
@@ -54,7 +54,7 @@ past context, while a backward LSTM layer reads the same sentence in reverse and
 context. We concatenate these two vectors to form the output vector of a BLSTM, which is fed into a softmax layer to estimate a probability
 distribution over all possible labels.
 
-\vspace{-1mm}
+\vspace{-1.5mm}
 \paragraph{CRF}
 %A straightforward way to find the label sequence for a given sentence is to
 Choosing the best label for each word individually according to
@@ -73,7 +73,7 @@ We consider $\textbf{P}$ to be a matrix of confidence scores output by BLSTM, an
 \end{equation}
 During test, given a sentence $\bm{w}$, we adopt the Viterbi algorithm~\cite{rabiner1989tutorial} to find the optimal label sequence with the maximum score among all possible label sequences.
 
-\vspace{-1mm}
+\vspace{-1.5mm}
 \paragraph{ILP-based Post Inference}
 The output sequences of BLSTM-CRF do not necessarily satisfy the structural constraints of event extraction.
 %For instance, regardless of
@@ -116,7 +116,7 @@ This step simply %maps the input sentence to a specific event type, checking
 if the input sentence contains all the key arguments of a specific event type by
 examining the labeling sequence. % produced by the ILP post-inference layer.
 
-\vspace{-1mm}
+\vspace{-1.5mm}
 \paragraph{Multi-typed Events}
 There are scenarios where one sentence expresses multiple events which share some key arguments,
 % one event is associated with multiple types,
