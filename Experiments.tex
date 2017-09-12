@@ -46,7 +46,7 @@ randomly select 100 sentences from each dataset, and ask two annotators to decid
 As shown in Table~\ref{tab:3}, it is not surprising that \emph{ALL}, as the most strict, guarantees the quality of the collected data, but only contributes 203 sentences covering 9 event types, which is far from sufficient for further applications. \emph{IMP} relaxes \emph{ALL} by allowing the absence of non-key arguments, which expands the resulting dataset, but introduces more noise.
 We can also see that the dependency constraint (DIS) improves the data quality (\emph{IMP}+\emph{DIS}).
 %indicating that \emph{T2} is inappropriate to be used as a soft constraint.
-Compared with \emph{IMP}, the significant quality improvement by \emph{IMP\&TIME} proves that time-related arguments within CVT schemas are critical to imply an event occurrence. Among all strategies, the dataset by \emph{IMP\&TIME}+\emph{DIS}  achieves the best quality, while still accounting for 46735 sentences with 50109 events, almost 8 times more than the ACE dataset, showing that it is feasible to automatically collect quality training data for event extraction without either human-designed event schemas or \textbf{extra} human annotations.
+Compared with \emph{IMP}, the significant quality improvement by \emph{IMP\&TIME} proves that time-related arguments within CVT schemas are critical to imply an event occurrence. Among all strategies, the dataset by \emph{IMP\&TIME}+\emph{DIS}  achieves the best quality, while still accounting for 46735 sentences with 50109 events, almost 10 times more than the ACE dataset, showing that it is feasible to automatically collect quality training data for event extraction without either human-designed event schemas or \textbf{extra} human annotations.
 % our hypothesis \emph{H3} and \emph{H4} are feasible and it is an effective way to generate reliable data automatically.
 
 Our final dataset, \textbf{FBWiki}, using \emph{IMP\&TIME}+\emph{DIS} , contains 46,735 positive sentences and 79,536 negative ones\footnote{Besides trivial negative samples that have no matched arguments, we randomly sample 34,837 negative instances that contain only part of key arguments, and 21,866 sentences whose key arguments violate the dependency constraint.}
@@ -231,7 +231,7 @@ On this manually annotated dataset, we can observe similar trends with Table~\re
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=.48\textwidth]{figure3.png}
+	\includegraphics[width=.48\textwidth]{figure3(3).png}
 	\caption{Example outputs of BLSTM-CRF-ILP$_{multi}$.\label{fig:1}}
 \end{figure}
 

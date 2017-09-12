@@ -133,6 +133,7 @@ After event detection, a sentence will be classified into one or more event type
 %Next, we will identify the remaining non-key arguments in the sentence.
 %
 We next adopt the same BLSTM-CRF architecture %(that is used for event detection) 
-to detect the remaining non-key arguments, where we encode the event label (from the first stage) %(output of event detection) 
+to detect the remaining non-key arguments, where we encode the key-argument label (from the first stage) %(output of event detection) 
 of each word into a key-argument feature vector through a look-up table, and concatenate it with the original word
-embedding as the input to the new BLSTM-CRF. Note that we do not need post inference here, \FIXME{because...}.
+embedding as the input to a new BLSTM-CRF. Note that we do not need post inference here, because there is no structural constraints between non-key arguments.
+% \FIXME{because...}.
