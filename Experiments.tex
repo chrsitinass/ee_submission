@@ -7,16 +7,16 @@ work with other knowledge resources for more types of event.
 
  \subsection{Dataset Evaluation}\label{sec:evalhypo}
 We start by comparing key argument selection strategies: %different data-collecting strategies:
-(1) \emph{ALL}: use all arguments as key arguments; (2) \emph{IMP}:
-uses the top half arguments with highest importance scores as key arguments;
+(1) \emph{ALL}: uses all arguments as key arguments; (2) \emph{IMP}: uses the top half arguments with highest importance scores as key
+arguments;
 %we select the top half arguments with highest importance values as key arguments;
 (3) \emph{IMP\&TIME}:  includes a time-related argument together with  the arguments selected by \emph{IMP};
 and (4) \emph{DIS}: eliminate sentences where the dependency distances
  between any two key arguments are greater than 2.
 %(3) \emph{IMP\&TIME} means adding a time-related argument with the highest importance value to %the set of key arguments defined by
 %\emph{IMP}; (4) \emph{DIS}: we eliminate sentences where the dependency distances between any two key arguments are greater than 2.
-We follow the above methods to collect datasets using Freebase and the English Wikipedia dump of 2016-11-20,
-randomly select 100 sentences from each dataset, and ask two annotators to decide whether each sentence implies a given type of event.
+We use the above methods to collect datasets using Freebase and the English Wikipedia dump of 2016-11-20, by randomly selecting 100
+sentences from each dataset, and ask two annotators to decide if each sentence implies a given event type.
 
 
 
@@ -171,7 +171,9 @@ The CRF layer brings an averagely 2\% improvement in all metrics, and by adding 
 	\rowcolor{Gray} BLSTM-CRF-ILP$_{1}$ & 84.4 & 74.1 & 78.9 & 62.3 & 53.8 & 57.3 & 42.7 & 33.8 & 37.7 \\ \hline
 	BLSTM-CRF-ILP$_{multi}$ & 85.3 & \textbf{79.9} & \textbf{82.5} & 60.4 & \textbf{55.3} & \textbf{57.7} & 41.9 & \textbf{34.6} & \textbf{37.9} \\ \hline
 \end{tabular}
+\vspace{-2mm}
 \caption{System performance when compared against automatic annotations (\%).  \label{tab:1}}
+\vspace{-3mm}
 \end{table*}
 
 % \paragraph{Multi-word Argument Detection}
@@ -194,27 +196,19 @@ with an accuracy of 95.6\%, and for each involved event, our model maintains a h
 performance in identifying its arguments, achieving 45.5\%, and 29.1\% in F1 for key argument detection and all argument detection, respectively.
 
 \subsection{Manual Evaluation}\label{manualeve}
-To provide a deep investigation about our dataset and models, we randomly sample 150 sentences
-from the test set. Two annotators are asked to annotate each sentence following
-two steps. First, determine whether a given sentence is positive or negative, and assign \textbf{all possible}
-event types to positive ones. Next, label all related arguments and their roles according to
-the event types for all positive instances. Two annotators will independently annotate each sentence,
-and discuss to reach an agreement. The inter-annotator agreement is 87\% for event types and 79\% for arguments.
+To provide a deep investigation about our dataset and models, we randomly sample 150 sentences from the test set. Two annotators are asked
+to annotate each sentence following two steps. First, determine if a given sentence is positive or negative, and assign \textbf{all
+possible} event types to positive ones. Next, label all related arguments and their roles according to the event types for all positive
+instances. Two annotators will independently annotate each sentence, and discuss to reach an agreement. The inter-annotator agreement is
+87\% for event types and 79\% for arguments.
 
 
-By comparing the automatic and manual annotations on the 150 sentences, we find that
-the main issue for the automatic annotation is that some automatically labeled sentences
-do not imply any event while still matching all key properties of certain CVT entries in Freebase.
-We find 16 such instances that are mistakenly labeled as positive.
-For example in Figure~\ref{fig:1}, although the phrase \underline{\emph{the car}} in S6 matches a film name,
-it does not indicate that film. %, and there is no explicit evidence indicating that an actor starred in this film.
-This is mainly because that we currently do not have a strong entity linker to verify those entities, which we leave for
-future work.
-But, interestingly,
-% a bottleneck of our data generation strategy.
-during manual investigation,
-%we find 16 negative sentences which are mistakenly labeled as positive, and
-we find that BLSTM-CRF-ILP$_{multi}$ manages to detect 6 of them as negative.
+By comparing the automatic and manual annotations on the 150 sentences, we find that the main issue for the automatic annotation is that
+some automatically labeled sentences do not imply any event while still matching all key properties of certain \CVT entries in Freebase. We
+find 16 such instances that are mistakenly labeled as positive. For example in Figure~\ref{fig:1}, although the phrase \underline{\emph{the
+car}} in S6 matches a film name, it does not refer to a film. This is because that we currently do not have a strong entity linker to
+verify those entities, which we leave for future work. However, during manual investigation, BLSTM-CRF-ILP$_{multi}$ can correctly identify
+these 6 instances as negative.
 
 
 %\begin{table}[h]
@@ -245,9 +239,9 @@ On this manually annotated dataset, we can observe similar trends with Table~\re
 \begin{figure}[t!]
 	\centering
 	\includegraphics[width=.48\textwidth]{figure3(3).png}
-    \vspace{-3mm}
+    \vspace{-5mm}
 	\caption{Example outputs of BLSTM-CRF-ILP$_{multi}$.\label{fig:1}}
-    \vspace{-3mm}
+    \vspace{-5mm}
 \end{figure}
 
 
@@ -300,10 +294,12 @@ winning of the Olympics games, and awards winning in entertainment (Table~\ref{t
 	\rowcolor{Gray} Awards & 3039 & 2217 & 95.0\% & 82.8\% & 58.6\% \\
     \bottomrule
 \end{tabular}
+\vspace{-2mm}
 \caption{Statistics of the TBWiki dataset and the performance (in F1) of our model on TBWiki.
 %\textit{Entr.} is the number of table entries. \textit{Sent.} is number of positive instances.
 EC, KAD and AAD denote event type classification, key argument detection and all key argument detection, respectively.
 \label{tab:6}}
+\vspace{-5mm}
 \end{table}
 
 We train our BLSTM-CRF-ILP$_{multi}$ on this dataset and evaluate it on 100 manually annotated sentences.
