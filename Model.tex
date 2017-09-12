@@ -5,8 +5,8 @@ Unlike prior works, our approach does not rely on explicit trigger identificatio
 an event. We solve the problem in a 2-stage pipeline, depicted in Figure~\ref{fig:model}, which takes raw text as input and outputs  labeling sequence(s) and event type(s)-- if any event is detected.
 
 The first stage identifies the key arguments in a sentence. If a sentence contains \emph{\textbf{all} key arguments} of a specific
-event type, it will be considered to imply an event mention of this specified type. 
-%This stage outputs a labeling sequence regarding key arguments and the corresponding event type (if an event is detected). 
+event type, it will be considered to imply an event mention of this specified type.
+%This stage outputs a labeling sequence regarding key arguments and the corresponding event type (if an event is detected).
 Since at this stage we do not concern non-key arguments, all non-key argument tokens
 are tagged as \texttt{O}. Furthermore, multiple labeling sequences may be produced by this stage, each corresponds to an event type. The
 second stage takes in the outputs of the first stage, and detects all the non-key arguments.
@@ -30,6 +30,7 @@ second stage takes in the outputs of the first stage, and detects all the non-ke
 \begin{figure}[t!]
   \centering
   \includegraphics[width=0.5\textwidth]{figs/model.pdf}
+  \vspace{-2mm}
   \caption{Our 2-stage event extraction pipeline.}\label{fig:model}
 \end{figure}
 
@@ -56,7 +57,7 @@ distribution over all possible labels.
 Choosing the best label for each word individually according to
 the BLSTM
 %with maximum probability by LSTM as the prediction for each word.
-%However, this greedy strategy 
+%However, this greedy strategy
 ignores the dependencies between labels, thus cannot guarantee the best sequence.  %this independent labeling strategy
 %is limited especially when there are strong dependencies and constraints between labels.
 %To model the correlations between labels,
@@ -70,7 +71,7 @@ We consider $\textbf{P}$ to be a matrix of confidence scores output by BLSTM, an
 During test, given a sentence $\bm{w}$, we adopt the Viterbi algorithm~\cite{rabiner1989tutorial} to find the optimal label sequence with the maximum score among all possible label sequences.
 
 \paragraph{ILP-based Post Inference}
-The output sequences of BLSTM-CRF do not necessarily satisfy the structural constraints of event extraction. 
+The output sequences of BLSTM-CRF do not necessarily satisfy the structural constraints of event extraction.
 %For instance, regardless of
 %how many key arguments are correctly identified by BLSTM-CRF, if there is one key argument missing, this detection should be considered as failed.
 %
@@ -106,14 +107,14 @@ where we consider the following four constraints:
 where $n$ is the length of the sentence.
 
 \paragraph{Event Detection}
-This step simply %maps the input sentence to a specific event type, checking 
+This step simply %maps the input sentence to a specific event type, checking
 if the input sentence contains all the key arguments of a specific event type by
 examining the labeling sequence. % produced by the ILP post-inference layer.
 
 
 \paragraph{Multi-typed Events}
 There are scenarios where one sentence expresses multiple events which share some key arguments,
-% one event is associated with multiple types, 
+% one event is associated with multiple types,
 but most current event extractors only map a sentence to one event.
 For example, in S5, \emph{Obama} is the \texttt{office\_holder} of a \texttt{government\_position\_held} event and \texttt{nominee} of an \texttt{award\_nomination} event.
 \begin{quote}
@@ -132,8 +133,8 @@ After event detection, a sentence will be classified into one or more event type
 %The next step is argument detection, which
 %Next, we will identify the remaining non-key arguments in the sentence.
 %
-We next adopt the same BLSTM-CRF architecture %(that is used for event detection) 
-to detect the remaining non-key arguments, where we encode the key-argument label (from the first stage) %(output of event detection) 
+We next adopt the same BLSTM-CRF architecture %(that is used for event detection)
+to detect the remaining non-key arguments, where we encode the key-argument label (from the first stage) %(output of event detection)
 of each word into a key-argument feature vector through a look-up table, and concatenate it with the original word
 embedding as the input to a new BLSTM-CRF. Note that we do not need post inference here, because there is no structural constraints between non-key arguments.
 % \FIXME{because...}.

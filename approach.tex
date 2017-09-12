@@ -51,11 +51,11 @@ Using this strategy, the first three arguments of the \CVT entry are considered 
 
 \paragraph{Selection Creteria: }
 To determine how many arguments should be chosen in P1, we have conducted a series of evaluations on the quantity and
-quality of the datasets using different policies. We found that choosing the top half arguments % (sorted by their importance scores) 
+quality of the datasets using different policies. We found that choosing the top half arguments % (sorted by their importance scores)
 gives the best accuracy for event labeling.
 
-We use the following three example sentences from Wikipedia% text dataset 
-to explain P2 and P3 %in our key argument selection strategy 
+We use the following three example sentences from Wikipedia% text dataset
+to explain P2 and P3 %in our key argument selection strategy
 described above. %The three sentences are:
 %
 \begin{quote}
@@ -71,7 +71,6 @@ described above. %The three sentences are:
 
 \begin{table}
  \scriptsize
- \caption{A \CVT entry of \texttt{business.acquisition} in \FB. \label{tbl:bs}}
         \begin{tabular}{llllc}
         \toprule
         id & company\_acquired & acquiring\_company & date & divisions\_formed\\
@@ -79,6 +78,7 @@ described above. %The three sentences are:
         m.05nb3y7 & aQuantive & Microsoft & 2007 & N/A\\
         \bottomrule
         \end{tabular}
+        \caption{A \CVT entry of \texttt{business.acquisition} in \FB. \label{tbl:bs}}
 \end{table}
 
 
@@ -90,17 +90,17 @@ described above. %The three sentences are:
 
 
 Although time-related arguments are often missing in the currently imperfect \KBs, they are crucial to identify the actual occurrence of an
-event. As an example, suppose we want to use the \CVT entry shown in Table~\ref{tbl:bs} to determine whether sentences S2 and S3 are 
+event. As an example, suppose we want to use the \CVT entry shown in Table~\ref{tbl:bs} to determine whether sentences S2 and S3 are
 \texttt{business.acquistion} events. While this strategy works for S2, it gives a false prediction for S3. If we add the time-related
-argument (i.e., date: 2007), we can then correctly label both sentences. 
-%We have conducted pilot experiments on our training data during the design phase, and found time-related arguments to be useful. 
+argument (i.e., date: 2007), we can then correctly label both sentences.
+%We have conducted pilot experiments on our training data during the design phase, and found time-related arguments to be useful.
 Therefore, we always consider the most important time-related argument as key
 arguments (P2) when they are available.
 
 Finally, P3 is based on our intuitions that two arguments involved in the same event mention are likely to be closer within the
-syntactic structure. %As an example, consider 
+syntactic structure. %As an example, consider
 %Figure~\ref{fig:2} shows the dependency parse tree of S4, its  is given in .
-%For example,  %in the dependency parse tree of S4 in Figure~\ref{fig:2}, 
+%For example,  %in the dependency parse tree of S4 in Figure~\ref{fig:2},
 As shown in  Figure~\ref{fig:2}, although both \emph{Prince Philip} and \emph{marriage} can be matched as key arguments in a  \texttt{people.marriage}
 entry, but with a distance of 3 (i.e., far from each other under our criterion) on the dependency tree, thus S4 will be labeled as
 negative.
@@ -124,7 +124,7 @@ generate rule set, and check if the target sentence contains all the key argumen
 Because 68\%  of  arguments in our dataset consist of more than one word, we formulate each step in a sequence labeling paradigm rather
 than word-level classifications. We tag each word of the sentence using the standard begin-inside-outside (\texttt{BIO})
 scheme\FIXME{\cite{}}, where each token is labeled as \texttt{B-role} if it is the beginning of an event argument with its %corresponding
-role \texttt{role}, or \texttt{I-role} if it is inside a \texttt{role}, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}. 
+role \texttt{role}, or \texttt{I-role} if it is inside a \texttt{role}, or \texttt{O} otherwise. We call this a \textbf{labeling sequence}.
 %For instance, Figure~\ref{fig:ls} illustrates the labeling sequence for sentence S1 given in Figure~\ref{fig:example} (a).  As an output, we
 %record the raw text of each training sentence, plus its labeling sequence, and key/non-key arguments.
 
@@ -159,9 +159,9 @@ single table entry can be automatically applied to an unbounded number of senten
 
 %Our current implementation does not disambiguate pronouns. There are co-reference methods\FIXME{~\cite{}} that can be used to find out
 %which word a pronoun refers to. These works are therefore complementary to our approach. Integrating our work with co-reference methods is
-Our implementation may benefit from pronoun resolution, % disambiguate pronouns. %There are co-reference methods\FIXME{~\cite{}} that can be used to find out which word a pronoun refers to. 
-%These works are therefore complementary to our approach. Integrating our work with co-reference methods is our future work. 
-which is complementary to our method, and may improve our recall. 
-%Finally, 
+Our implementation may benefit from pronoun resolution, % disambiguate pronouns. %There are co-reference methods\FIXME{~\cite{}} that can be used to find out which word a pronoun refers to.
+%These works are therefore complementary to our approach. Integrating our work with co-reference methods is our future work.
+which is complementary to our method, and may improve our recall.
+%Finally,
 While this work targets sentence-level event detection, we believe it is general applicable. There are methods
 like \FIXME{\cite{}} can be used to extend our approach to document-level event extraction.

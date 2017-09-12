@@ -14,15 +14,17 @@
         \end{tabular}
 
    }
+   \vspace{-2mm}
   \caption{The event type of the sentence shown in (a) can be automatically inferred using the structured table given by Freebase in (b).}
+  \vspace{-3mm}
   \label{fig:example}
 \end{figure}
 
 
 %The task of event extraction is to (1) detect the occurrence of events with specific types and (2) extract arguments (i.e. typed
 %participants or attributes) that are associated with an event.
-As a motivation example, consider the sentence %extracted from a Wikipedia article, shown 
-in Figure~\ref{fig:example}(a). To detect the event, 
+As a motivation example, consider the sentence %extracted from a Wikipedia article, shown
+in Figure~\ref{fig:example}(a). To detect the event,
 traditional approaches require first identifying the trigger word, \emph{sold}, then assigning it with a type of \texttt{business.acquisition}.
 
 
@@ -39,9 +41,9 @@ information, we can then label sentences without needing to explicitly identifyi
 the labour-intensive manual process. In this work, we develop a simple, yet effective technique to automatically generate training data by
 exploiting the prior \CVT knowledge.
 
-A natural question to ask is that ``How useful are \CVT-like structured information?". Later in this paper, we show that structured
-\KBs, tables or lists that are used to sum up certain activities can be useful sources of supervision to automatically collect event
-annotations. % -- using 24 \CVTs, we managed to automatically generate 100 thousands instances from a subset of the Wikipedia articles.
+%A natural question to ask is that ``How useful are \CVT-like structured information?". Later in this paper, we show that structured
+%\KBs, tables or lists that are used to sum up certain activities can be useful sources of supervision to automatically collect event
+%annotations. % -- using 24 \CVTs, we managed to automatically generate 100 thousands instances from a subset of the Wikipedia articles.
 
 %
 %This work develops a simple, yet effective technique to automatically generate training data by exploiting the prior \CVT knowledge from

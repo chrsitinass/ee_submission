@@ -1,18 +1,16 @@
 \section{Experiments}
 %\subsection{Experimental Setup}
 %\textbf{Dataset and Evaluation Methodology}.
-Our experiments are designed to answer, % the following questions,
-1) whether it is possible to automatically collect training data for event extraction,
-2) whether  extractors trained on such data can detect events of interest and identify
-their corresponding arguments,
-and 3) whether our solution can work with other knowledge resources for more types of event.
+Our experiments are designed to answer: 1) whether it is possible to automatically collect training data for event extraction, 2) whether
+extractors trained on such data can detect events of interest and identify their corresponding arguments, and 3) whether our solution can
+work with other knowledge resources for more types of event.
 
  \subsection{Dataset Evaluation}\label{sec:evalhypo}
 We start by comparing key argument selection strategies: %different data-collecting strategies:
-(1) \emph{ALL}: use all arguments as key arguments; (2) \emph{IMP}: 
+(1) \emph{ALL}: use all arguments as key arguments; (2) \emph{IMP}:
 uses the top half arguments with highest importance scores as key arguments;
-%we select the top half arguments with highest importance values as key arguments; 
-(3) \emph{IMP\&TIME}:  includes a time-related argument together with  the arguments selected by \emph{IMP}; 
+%we select the top half arguments with highest importance values as key arguments;
+(3) \emph{IMP\&TIME}:  includes a time-related argument together with  the arguments selected by \emph{IMP};
 and (4) \emph{DIS}: eliminate sentences where the dependency distances
  between any two key arguments are greater than 2.
 %(3) \emph{IMP\&TIME} means adding a time-related argument with the highest importance value to %the set of key arguments defined by
@@ -27,20 +25,25 @@ randomly select 100 sentences from each dataset, and ask two annotators to decid
 \begin{table}[t!]
 \scriptsize
 \centering
-\begin{tabular}{|l|c|c|c|} \hline
-	 Strategy & Sentences & Type & Positive Percentage (\%) \\ \hline
-	 \emph{ALL} & 203 & 9 & 98\% \\ \hline
-	 \emph{IMP} & 318K & 24 & 22\% \\ \hline
-	 \emph{IMP}+\emph{DIS} & 170K & 24 & 37\% \\ \hline
-	 \emph{IMP\&TIME} & 112K & 24 & 83\% \\ \hline
-	 \emph{IMP\&TIME}+\emph{DIS} & 46K & 24 & 91\% \\ \hline
+\begin{tabular}{lccc}
+     \toprule
+	 Strategy & Sentences & Type & Positive Percentage (\%) \\
+     \midrule
+	 \rowcolor{Gray}\emph{ALL} & 203 & 9 & 98\% \\
+	 \emph{IMP} & 318K & 24 & 22\% \\
+	 \rowcolor{Gray} \emph{IMP}+\emph{DIS} & 170K & 24 & 37\% \\
+	 \emph{IMP\&TIME} & 112K & 24 & 83\% \\
+	 \rowcolor{Gray} \emph{IMP\&TIME}+\emph{DIS} & 46K & 24 & 91\% \\
+     \bottomrule
 \end{tabular}
+\vspace{-2mm}
 \caption{Statistics of the datasets built with different strategies.
 % \textit{Instances} denotes the number of CVT instances that can be used for each hypothesis.
-%\textit{Sent.} is the number of sentences found. 
-\textit{Type} the number of different CVT types found.  
+%\textit{Sent.} is the number of sentences found.
+\textit{Type} the number of different CVT types found.
 %\textit{Positive} is the percentage of sentences mentioning the given events explicitly.
 \label{tab:3}}
+\vspace{-3mm}
 \end{table}
 
 As shown in Table~\ref{tab:3}, it is not surprising that \emph{ALL}, as the most strict, guarantees the quality of the collected data, but only contributes 203 sentences covering 9 event types, which is far from sufficient for further applications. \emph{IMP} relaxes \emph{ALL} by allowing the absence of non-key arguments, which expands the resulting dataset, but introduces more noise.
@@ -51,8 +54,8 @@ Compared with \emph{IMP}, the significant quality improvement by \emph{IMP\&TIME
 
 Our final dataset, \textbf{FBWiki}, using \emph{IMP\&TIME}+\emph{DIS} , contains 46,735 positive sentences and 79,536 negative ones\footnote{Besides trivial negative samples that have no matched arguments, we randomly sample 34,837 negative instances that contain only part of key arguments, and 21,866 sentences whose key arguments violate the dependency constraint.}
  a random split of 101,019 for
-training and 25,252 for testing. Note that there are averagely 4.8 arguments per event, and in total, 5.5\% instances labeled with more
-than two types of events.
+training and 25,252 for testing. There are on average 4.8 arguments per event, and in total, 5.5\% instances labeled with more than two
+types of events.
 %Statistics for the generated dataset from Freebase is shown in Table~\ref{statistics}.
 
 %\begin{table}
@@ -73,42 +76,48 @@ than two types of events.
 
 %%%% containing 7,180 sentences, containing 7,394 events and 25,840 arguments. We then randomly select 4,800 sentences for training and 1,180 sentences as test set, and the rest 1,200 sentences for validation.
 %We first manually evaluate the quality of our test set and then regard the automatically generated data as gold standard and evaluate our model accordingly. Next, we manually evaluate a subset of events detected by our model and analyze the differences with regards to the automatic evaluation. Finally, we conduct evaluation on a smaller dataset constructed according to Wikipedia tables and articles.
+\vspace{1mm}
 
-\noindent\textbf{Trigger Inference: \mbox{ }} To further explore the relationship between key arguments and triggers, we regard the least common ancestor of all key arguments in the dependency tree as a trigger candidate. As listed in Table~\ref{freqTriggers}, these candidates share similar meanings and are highly informative to the underlying event types, showing that our key arguments with necessary constraints can play the same role with explicit triggers in identifying an event.
+\noindent\textbf{\emph{Trigger Inference}: \mbox{ }} To further explore the relationship between key arguments and triggers, we regard the
+least common ancestor of all key arguments in the dependency tree as a trigger candidate. As listed in Table~\ref{freqTriggers}, these
+candidates share similar meanings and are highly informative to the underlying event types, showing that our key arguments with necessary
+constraints can play the same role with explicit triggers in identifying an event.
 % Although missing explicit information from \KB, most triggers can be inferred from the dependencies between a group of key arguments and its context.
 
 \begin{table}
 	\scriptsize
 	\centering
-	\begin{tabular}{|l|l|l|} \hline
-		Event types & Trigger candidates & Percentage \\ \hline
-		film\_performance & play, appear, star, cast, portray & 0.72 \\ \hline
-		award\_honor & win, receive, award, share, earn & 0.91 \\ \hline
-		education & graduate, receive, attend, obtain, study & 0.83 \\ \hline
-		acquisition & acquire, purchase, buy, merge, sell & 0.81 \\ \hline
-		employ.\_tenure & be, join, become, serve, appoint & 0.79 \\ \hline
+	\begin{tabular}{lll}
+    \toprule
+		Event types & Trigger candidates & Percentage \\
+    \midrule
+		\rowcolor{Gray}film\_performance & play, appear, star, cast, portray & 0.72 \\
+		award\_honor & win, receive, award, share, earn & 0.91 \\
+		\rowcolor{Gray}education & graduate, receive, attend, obtain, study & 0.83 \\
+		acquisition & acquire, purchase, buy, merge, sell & 0.81 \\
+		\rowcolor{Gray}employ.\_tenure & be, join, become, serve, appoint & 0.79 \\
+    \bottomrule
 	\end{tabular}
-	\caption{Top 5 most frequent trigger candidates and their proportions over all postive instances within each type.}
+    \vspace{-2mm}
+	\caption{Top 5 most frequent trigger candidates and their proportions over all positive instances within each type.}
+    \vspace{-3mm}
 	\label{freqTriggers}
 \end{table}
 
-\noindent\textbf{On ACE: \mbox{ }} We also test our strategy on the ACE dataset. 
-We first collect all annotated events, without triggers, as the knowledge base
-to compute the importance values for all arguments, and select the key arguments
-for each ACE event type accordingly.  We follow \emph{IMP\&TIME}+\emph{DIS} to examine every sentence
-whether it can be selected as an annotated instance within the ACE event types.
-Eventually, we correctly obtain 3,448 sentences as positive instances, covering 
-64.7\% of the original ACE dataset.  We find that the main reason for the 
-missing 35.3\% is that many arguments in the ACE dataset are pronouns, 
-where our strategy is currently unable to treat pronouns as key arguments. However,
-if a high-precision coreference resolution tool is available to preprocess the document,
+\vspace{1mm} \noindent\textbf{\emph{On ACE}: \mbox{ }} We also test our strategy on the ACE dataset. We first collect all annotated events,
+without triggers, as the knowledge base to compute the importance values for all arguments, and select the key arguments for each ACE event
+type accordingly. We follow \emph{IMP\&TIME}+\emph{DIS} to examine every sentence whether it can be selected as an annotated instance
+within the ACE event types. Eventually, we correctly obtain 3,448 sentences as positive instances, covering 64.7\% of the original ACE
+dataset.  We find that the main reason for the missing 35.3\% is that many arguments in the ACE dataset are pronouns, where our strategy is
+currently unable to treat pronouns as key arguments. However, if a high-precision coreference resolution tool is available to preprocess
+the document,
 our solution would be able to automatically label more instances.% as training data.
 % \textbf{ANYTHING NOVEL that traditional ACE does not have??? multple types? multiple events?}
 
  \subsection{Extraction Setup}\label{sec:evalevent}
 Next, we evaluate our event extractor on FBWiki  %the collected datasets,
 %\paragraph{Metrics:} We evaluate our models
-%in terms of popular metrics in event extraction, i.e., 
+%in terms of popular metrics in event extraction, i.e.,
 with precision (P), recall (R), and F-measure (F) for each subtask. These metrics are computed according to the following standards of correctness:
 For \emph{event classification}, an event is correctly classified if its reference sentence contains \textbf{all key arguments} of this event type.
 For \emph{key argument detection}, an event is correctly detected if its type and all its key arguments match a reference event within the same sentence.
@@ -126,7 +135,7 @@ We compare our proposed model with three baselines. %including traditional featu
 %For neural network baslines, we train
 The first is a  BLSTM model that takes word embeddings as input, and outputs the label for each word with the maximum probability. % among all possible labels.
 For feature-based methods, we apply Conditional Random Field (with the CRF++ toolkit~\cite{kudo2005crf++} ) and Maximum Entropy \cite{berger1996maximum} (Le Zhang's MaxEnt toolkit) to explore a variety of elaborate features,
-% such as lexical, syntactic and entity-related features, 
+% such as lexical, syntactic and entity-related features,
 according to the state-of-art feature-based ACE event extractors~\cite{li2013joint}.
 % Note that during argument detection stage, we add the event detection label for each word as a supplementary feature.
 %
@@ -220,7 +229,7 @@ we find that BLSTM-CRF-ILP$_{multi}$ manages to detect 6 of them as negative.
 %\caption{The F1 scores of different systems on the manually annotated data. EC, KAD, AAD denote the event type classification, key argument detection and all key argument detection, respectively. \label{tab:2}}
 %\end{table}
 
-On this manually annotated dataset, we can observe similar trends with Table~\ref{tab:1}, and BLSTM-CRF-ILP$_{multi}$ remains the best performing model, achieving 80.7\%, 56.4\% and 36.3\% in F1 scores for event type, key argument detection and all argument detection, respectively. 
+On this manually annotated dataset, we can observe similar trends with Table~\ref{tab:1}, and BLSTM-CRF-ILP$_{multi}$ remains the best performing model, achieving 80.7\%, 56.4\% and 36.3\% in F1 scores for event type, key argument detection and all argument detection, respectively.
 %where we can observe similar trends with Table~\ref{tab:1}, that
 %both CRF layer and ILP$_{multi}$ greatly improve the overall performance and
 
@@ -272,16 +281,19 @@ almost half of which are not covered in the currently used Freebase.
 To investigate the applicability of our approach to other structured knowledge/tables besides Freebase CVT tables, %we conduct manual evaluation on
 we automatically build a new dataset, \textbf{TBWiki}, with the supervision provided by Wikipedia tables, which characterize events about business acquisition, winning of the Olympics games, and awards winning in entertainment (Table~\ref{tab:6}).
 
-\begin{table}[h]
+\begin{table}[t]
 \scriptsize
 \centering
-\begin{tabular}{|l|c|c|c|c|c|} \hline
-	Event type & Entries & Positive & EC & KAD & AAD \\ \hline
-	Acquisition & 690 & 414 & 87.0\% & 72.0\% & 69.6\% \\ \hline
-	Olympics & 2503 & 1460 & 77.2\% & 64.5\% & 38.6\% \\ \hline
-	Awards & 3039 & 2217 & 95.0\% & 82.8\% & 58.6\% \\ \hline
+\begin{tabular}{lccccc}
+    \toprule
+	Event type & Entries & Positive & EC & KAD & AAD \\
+    \midrule
+	Acquisition & 690 & 414 & 87.0\% & 72.0\% & 69.6\% \\
+	Olympics & 2503 & 1460 & 77.2\% & 64.5\% & 38.6\% \\
+	Awards & 3039 & 2217 & 95.0\% & 82.8\% & 58.6\% \\
+    \bottomrule
 \end{tabular}
-\caption{Statistics of the TBWiki dataset and the performance (in F1) of our model on TBWiki. 
+\caption{Statistics of the TBWiki dataset and the performance (in F1) of our model on TBWiki.
 %\textit{Entr.} is the number of table entries. \textit{Sent.} is number of positive instances.
 EC, KAD and AAD denote event type classification, key argument detection and all key argument detection, respectively.
 \label{tab:6}}
