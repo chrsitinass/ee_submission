@@ -245,7 +245,9 @@ On this manually annotated dataset, we can observe similar trends with Table~\re
 \begin{figure}[t!]
 	\centering
 	\includegraphics[width=.48\textwidth]{figure3(3).png}
+    \vspace{-3mm}
 	\caption{Example outputs of BLSTM-CRF-ILP$_{multi}$.\label{fig:1}}
+    \vspace{-3mm}
 \end{figure}
 
 
@@ -253,7 +255,7 @@ On this manually annotated dataset, we can observe similar trends with Table~\re
 %Moreover, %manual evaluation may help us to gain a deep insight about our data and models. We
 % we manually check the top 5 event types whose EC F1 scores by BLSTM-CRF-ILP$_{multi}$ differ greatly between automatic evaluation and manual evaluation, summarized in Table~\ref{tab:4}. We find that most of the performance differences are caused by data generation. Figure~\ref{fig:1} examples two types of errors in data construction. Several automatically labeled sentences do not imply any event while still matching all key properties of some CVT entries. For example, although the phrase \emph{the car} in S5 matches a film name, it does not indicate this film, and there is no explicit evidence indicating that an actor starred in this film. This is a bottleneck of our data generation strategy. During manual evaluation, we find 16 negative sentences which are mistakenly labeled as positive, and our model manages to rectify 6 of them.
 
-Remarkably, our BLSTM-CRF-ILP$_{multi}$ model can find more CVT instances that are currently not referenced in Freebase. Our model detects two events in S7, while the arguments of the \textit{tv.tv\_appearance} event do not match any existing CVT instances in Freebase, which do not receive any credit during automatic evaluation, but should be populated into Freebase. %leading to a missing event in data generation.
+Remarkably, our BLSTM-CRF-ILP$_{multi}$ model can find more \CVT instances that are currently not referenced in Freebase. Our model detects two events in S7, while the arguments of the \textit{tv.tv\_appearance} event do not match any existing CVT instances in Freebase, which do not receive any credit during automatic evaluation, but should be populated into Freebase. %leading to a missing event in data generation.
 This  suggests that by learning from distant supervision provided by Freebase, our model can be used to populate or update Freebase instances in return.
 
 %\begin{table}[h]
@@ -282,8 +284,9 @@ almost half of which are not covered in the currently used Freebase.
 
 
 \subsection{Tables as Indirect Supervision}
-To investigate the applicability of our approach to other structured knowledge/tables besides Freebase CVT tables, %we conduct manual evaluation on
-we automatically build a new dataset, \textbf{TBWiki}, with the supervision provided by Wikipedia tables, which characterize events about business acquisition, winning of the Olympics games, and awards winning in entertainment (Table~\ref{tab:6}).
+To investigate the applicability of our approach to other structured knowledge/tables besides Freebase \CVT tables, we automatically build
+a new dataset, \textbf{TBWiki}, with the supervision provided by Wikipedia tables, which characterize events about business acquisition,
+winning of the Olympics games, and awards winning in entertainment (Table~\ref{tab:6}).
 
 \begin{table}[t]
 \scriptsize

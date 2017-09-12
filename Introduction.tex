@@ -31,8 +31,8 @@ This work develops a novel approach to automatically label training instances fo
 triggers are useful, they do not always need to be explicitly captured. Structured knowledge bases (\KBs) such as Freebase already provide
 rich information of event arguments, organizing as structured tables, to enable us to automatically infer the event type. For example,
 sentence ``\textit{In 2002, WorldCom made its filing for Chapter 11 in New York.}'' describes a \emph{bankruptcy} event; but this event
-cannot or does not have to be identified through a \emph{bankrupt} trigger -- in this case, several key arguments together also imply such
-an event.
+does not have to be identified through a \emph{bankrupt} trigger (and in fact such a trigger is missing in this sentence) -- in this case,
+several key arguments together also imply such an event.
 
 % For example, an \emph{marriage} event does not always have to be identified through finding the \emph{married} trigger, as a \emph{spouse} argument also implies such an event.
 % In this paper, we show that structured tables in some knowledge bases already imply the occurrence of certain events.
@@ -42,15 +42,32 @@ If we can find ways to exploit structured tables or lists, a single entry can th
 human annotations. Such an approach is known as distant supervision (\DS). Recent
 studies~\cite{mintz2009distant,zeng2015distant} have demonstrated its effectiveness in various NLP tasks. The central idea of \DS is to use
 the knowledge extracted from a known \textit{KB} to \emph{distantly supervise} the process of training data generation. % using another dataset.
-\textbf{Specifically, we leverage Freebase CVT and Wikipedia tables to automatically label texts from a subset of Wikipedia articles.} By
-employing \DS, our approach is able to produce a large number of high-quality training instances, resulting in a training dataset that is
-14 times greater than the widely used ACE dataset -- which took \FIXME{xx linguists and annotators years} to build\FIXME{~\cite{}}.
+
+
+We observe that the structured tables of Freebase and Wikipedia can be useful for inferring event types. We then design heuristics to
+identify what are the most important properties, or \emph{key arguments},  of a table entry in determining the occurrence of an event. We
+show that it is possible to completely forgo explicit trigger information and entirely rely on key arguments to determine event types.
+Using key arguments, we can now develop an \emph{automatic} approach to generate training data for event extraction. Under this new \DS
+paradigm, we further propose a novel event extractor architecture based on neural networks and linear integer programming. One of the key
+innovations of our approach is that the model does not rely on explicit triggers. Instead, it uses a set of key arguments to characterize
+an event type. As a result, it eliminates the need to explicitly identify event triggers, a process that requires heavy human involvement.
+
+We evaluate our approach by applying it to sentence-level event extraction. We have conducted intensive experiments on multiple datasets
+generated using various knowledge resources. Our experimental results confirm that key arguments alone can be used to precisely infer event
+types. Using the structured tables from FreeBase and Wikipedia, we are able to automatically generate a large number of training instances
+-- resulting in a training dataset that is 14x greater than the widely used ACE data set  -- which is smaller, but took \FIXME{xx
+man-months} to construct.  We show that the quality of the automatically generated data is comparable to ones that were manually
+constructed by human experts. Using the larger volume of training data, in combination of our novel event extractor architecture, we not
+only learn a highly effective event extraction system, but also support multi-typed event detection -- a feature that none of the existing
+event extraction methods support, but is much needed.
+
+% \textbf{Specifically, we leverage Freebase CVT and Wikipedia tables to automatically label texts from a subset of Wikipedia
+%articles.} By employing \DS, our approach is able to produce a large number of high-quality training instances, resulting in a training
+%dataset that is 14 times greater than the widely used ACE dataset -- which took \FIXME{xx linguists and annotators years} to
+%build\FIXME{~\cite{}}.
 
 % introduce model here:
-Under this new \DS paradigm, we develop a novel event extractor architecture based on neural networks and linear integer programming. One
-of the key innovations of our approach is that the model does not rely on explicit triggers. Instead, it uses a set of key arguments to
-characterize an event type. As a result, it eliminates the need to explicitly identify event triggers, a process that requires heavy human
-involvement.
+
 
 
 % We evaluate our approach by  applying it to perform sentence-level event extraction. To generate training data, we use Freebase to
@@ -61,13 +78,13 @@ involvement.
 % }.
 
 % evaluation:
-\textbf{Intensive experiments on multiple datasets generated by different knowledge resources show that:
-(1) in absence of tirgger annotation, most of which can be inferred by key arguments, the quality of the automatically generated dataset is comparable to ones that were manually constructed by human experts;
-% Experimental results also confirm that
-(2) this new paradigm of data generation and modeling not only allows us to build a more efficient event extractor, but also unlocks the potential of multi-typed event detection -- a feature that
-% none
-few of the existing event extractors offers, but is much needed.}
-
+%\textbf{Intensive experiments on multiple datasets generated by different knowledge resources show that:
+%(1) in absence of tirgger annotation, most of which can be inferred by key arguments, the quality of the automatically generated dataset is comparable to ones that were manually constructed by human experts;
+%% Experimental results also confirm that
+%(2) this new paradigm of data generation and modeling not only allows us to build a more efficient event extractor, but also unlocks the potential of multi-typed event detection -- a feature that
+%% none
+%few of the existing event extractors offers, but is much needed.}
+%
 
 
 %The aforementioned drawbacks of ACE event extraction systems motivate us to
